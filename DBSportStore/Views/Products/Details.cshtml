@@ -1,75 +1,82 @@
 ﻿@model DBSportStore.Models.Product
 
 @{
-    ViewBag.Title = "Details";
+    // Tiêu đề hiển thị trên tab trình duyệt
+    ViewBag.Title = "Chi tiết sản phẩm";
     Layout = "~/Views/Shared/_StoreLayout.cshtml";
 }
 
-<h2>Details</h2>
+<h2>Chi tiết sản phẩm</h2>
 
 <div>
-    <h4>Product</h4>
+    <h4>Thông tin sản phẩm</h4>
     <hr />
-    <dl class="dl-horizontal">
-        <dt>
-            @Html.DisplayNameFor(model => model.ProductName)
-        </dt>
 
-        <dd>
-            @Html.DisplayFor(model => model.ProductName)
-        </dd>
+    @*
+        Chỉ hiển thị ảnh khi Product có tên file trong ImageUrl.
+        File ảnh thật được lưu trong Content/images.
+    *@
+    @if (!string.IsNullOrEmpty(Model.ImageUrl))
+    {
+        <div style="margin:15px 0;">
+            <img src="~/Content/images/@Model.ImageUrl"
+                 alt="@Model.ProductName"
+                 style="width:220px;
+                height:220px;
+                object-fit:cover;
+                border-radius:12px;
+                border:1px solid #ddd;" />
+        </div>
+    }
 
-        <dt>
-            @Html.DisplayNameFor(model => model.Description)
-        </dt>
+<dl class="dl-horizontal">
+    @* Nhãn Tiếng Việt cho ProductName *@
+    <dt>Tên sản phẩm</dt>
 
-        <dd>
-            @Html.DisplayFor(model => model.Description)
-        </dd>
+    <dd>
+        @Html.DisplayFor(model => model.ProductName)
+    </dd>
 
-        <dt>
-            @Html.DisplayNameFor(model => model.Price)
-        </dt>
+    @* Nhãn Tiếng Việt cho Description *@
+    <dt>Mô tả</dt>
 
-        <dd>
-            @Html.DisplayFor(model => model.Price)
-        </dd>
+    <dd>
+        @Html.DisplayFor(model => model.Description)
+    </dd>
 
-        <dt>
-            @Html.DisplayNameFor(model => model.ImageUrl)
-        </dt>
+    @* Hiển thị giá theo VNĐ và bỏ phần thập phân ,00 *@
+    <dt>Đơn giá</dt>
+    <dd>@Model.Price.ToString("#,##0") đ</dd>
 
-        <dd>
-            @Html.DisplayFor(model => model.ImageUrl)
-        </dd>
 
-        <dt>
-            @Html.DisplayNameFor(model => model.StockQuantity)
-        </dt>
+    @* Nhãn Tiếng Việt cho số lượng sản phẩm còn trong kho *@
+    <dt>Số lượng tồn kho</dt>
 
-        <dd>
-            @Html.DisplayFor(model => model.StockQuantity)
-        </dd>
+    <dd>
+        @Html.DisplayFor(model => model.StockQuantity)
+    </dd>
+    @* Hiển thị trạng thái bằng chữ thay cho checkbox true/false *@
+    <dt>Trạng thái</dt>
+    <dd>
+        @(Model.IsActive ? "Đang bán" : "Ngừng bán")
+    </dd>
 
-        <dt>
-            @Html.DisplayNameFor(model => model.IsActive)
-        </dt>
+    @* Category là navigation property của Product *@
+    <dt>Danh mục</dt>
 
-        <dd>
-            @Html.DisplayFor(model => model.IsActive)
-        </dd>
+    <dd>
+        @Html.DisplayFor(model => model.Category.CategoryName)
+    </dd>
 
-        <dt>
-            @Html.DisplayNameFor(model => model.Category.CategoryName)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.Category.CategoryName)
-        </dd>
-
-    </dl>
+</dl>
 </div>
-<p>
-    @Html.ActionLink("Edit", "Edit", new { id = Model.ProductID }) |
-    @Html.ActionLink("Back to List", "Index")
+    <p>
+    @* Mở trang Edit của đúng Product đang xem *@
+    @Html.ActionLink(
+        "Sửa sản phẩm",
+        "Edit",
+        new { id = Model.ProductID })
+    |
+    @* Quay lại trang quản lý danh sách sản phẩm *@
+    @Html.ActionLink("Quay lại danh sách", "Index")
 </p>
