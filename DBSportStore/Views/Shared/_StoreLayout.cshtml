@@ -33,9 +33,14 @@
                 @Html.ActionLink("Quản lý sản phẩm", "Index", "Products")
 
                 @* Chưa tạo Controller trong phần thực hành chính B05 – Sẽ tạo ở Bài tập cuối buổi B05 này → để link tạm *@
-                <a href="#">Quản lý danh mục</a>
-                <a href="#">Quản lý khách hàng</a>
-                <a href="#">Quản lý đơn hàng</a>
+                @*<a href="#">Quản lý danh mục</a>
+        <a href="#">Quản lý khách hàng</a>
+        <a href="#">Quản lý đơn hàng</a>*@
+               
+                @Html.ActionLink("Quản lý danh mục", "Index", "Categories")
+                @Html.ActionLink("Quản lý khách hàng", "Index", "Customers")
+                @Html.ActionLink("Quản lý đơn hàng", "Index", "OrderProes")
+                
 
                 @* Các chức năng sẽ thực hiện ở các buổi sau *@
                 <a href="#">Giỏ hàng</a>

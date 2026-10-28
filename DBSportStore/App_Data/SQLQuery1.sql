@@ -340,3 +340,17 @@ SELECT ProductID, ProductName, Price, ImageUrl, StockQuantity FROM dbo.Product;
 SELECT * FROM dbo.OrderPro;
 SELECT * FROM dbo.OrderDetail;
 GO
+
+
+SELECT ProductID, ProductName, ImageUrl
+FROM Product;
+
+SELECT DB_NAME() AS CurrentDatabase;
+
+UPDATE dbo.Product
+SET ImageUrl = 'h1Sp.jpg'
+WHERE ProductName = 'Velocity Run White';
+
+SELECT ProductID, ProductName, ImageUrl
+FROM dbo.Product
+WHERE ProductName = 'Velocity Run White';

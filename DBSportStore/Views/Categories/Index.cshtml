@@ -1,34 +1,44 @@
-﻿@model IEnumerable<DBSportStore.Models.Category>
+﻿
+@model IEnumerable<DBSportStore.Models.Category>
 
 @{
-    ViewBag.Title = "Index";
+    ViewBag.Title = "Quản lý danh mục";
     Layout = "~/Views/Shared/_StoreLayout.cshtml";
 }
 
-<h2>Index</h2>
+<div class="container">
+    <h2>QUẢN LÝ DANH MỤC</h2>
 
-<p>
-    @Html.ActionLink("Create New", "Create")
-</p>
-<table class="table">
-    <tr>
-        <th>
-            @Html.DisplayNameFor(model => model.CategoryName)
-        </th>
-        <th></th>
-    </tr>
+    <p>
+        @Html.ActionLink("Thêm danh mục mới", "Create", null,
+            new { @class = "btn btn-primary" })
+    </p>
 
-@foreach (var item in Model) {
-    <tr>
-        <td>
-            @Html.DisplayFor(modelItem => item.CategoryName)
-        </td>
-        <td>
-            @Html.ActionLink("Edit", "Edit", new { id=item.CategoryID }) |
-            @Html.ActionLink("Details", "Details", new { id=item.CategoryID }) |
-            @Html.ActionLink("Delete", "Delete", new { id=item.CategoryID })
-        </td>
-    </tr>
-}
+    <table class="table table-bordered table-striped">
+        <thead>
+            <tr>
+                <th>Mã danh mục</th>
+                <th>Tên danh mục</th>
+                <th>Thao tác</th>
+            </tr>
+        </thead>
 
-</table>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>@Html.DisplayFor(modelItem => item.CategoryID)</td>
+                    <td>@Html.DisplayFor(modelItem => item.CategoryName)</td>
+                    <td>
+                        @Html.ActionLink("Sửa", "Edit",
+                            new { id = item.CategoryID }) |
+                        @Html.ActionLink("Chi tiết", "Details",
+                            new { id = item.CategoryID }) |
+                        @Html.ActionLink("Xóa", "Delete",
+                            new { id = item.CategoryID })
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
