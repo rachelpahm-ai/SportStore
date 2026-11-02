@@ -1,6 +1,5 @@
 ﻿@* View nhận danh sách ProductCardViewModel từ StoreController *@
-@model IEnumerable<DBSportStore.Models.ProductCardViewModel>
-
+@model DBSportStore.Models.StoreHomeViewModel
 @* Thiết lập tiêu đề và Layout dùng chung *@
 @{
     ViewBag.Title = "Trang chủ"; // tiêu đề trên tab trình duyệt
@@ -26,11 +25,15 @@
     <aside class="category-panel">
         <h3>Danh mục</h3>
         <ul class="category-list">
-            <li><a href="#">Giày thể thao</a></li>
-            <li><a href="#">Áo quần thi đấu</a></li>
-            <li><a href="#">Dụng cụ thể thao</a></li>
-            <li><a href="#">Phụ kiện thể thao</a></li>
+            <li>Tất cả sản phẩm</li>
 
+            @* Duyệt danh sách Category do Controller gửi sang. *@
+            @foreach (var category in Model.Categories)
+            {
+                <li>
+                    @category.CategoryName
+                </li>
+            }
         </ul>
     </aside>
 
