@@ -16,8 +16,42 @@
     </div>
 </section>
 
+<!-- ===== form tìm kiếm ===== -->
+
+<div class="catalog-toolbar">
+    @using (Html.BeginForm(
+        "Index",
+        "Store",
+        FormMethod.Get,
+        new { @class = "catalog-search" }))
+    {
+        @* Nếu đang lọc Category thì giữ categoryId khi tìm kiếm. *@
+        if (Model.SelectedCategoryId.HasValue)
+        {
+            <input type="hidden"
+                   name="categoryId"
+                   value="@Model.SelectedCategoryId" />
+        }
+
+        <input type="text"
+               name="keyword"
+               value="@Model.SearchTerm"
+               placeholder="Tìm tên hoặc mô tả sản phẩm..." />
+
+        <button type="submit" class="btn-brand">
+            Tìm kiếm
+        </button>
+
+        <a class="btn-soft"
+           href="@Url.Action("Index", "Store")">
+            Xóa lọc
+        </a>
+    }
+</div>
+
 <!-- Tiêu đề khu vực sản phẩm nổi bật -->
 <h2 class="section-title">Tất cả sản phẩm</h2>
+
 
 <!-- ===== KHUNG CHÍNH: danh mục trái + sản phẩm phải ===== -->
 <div class="store-shell" id="featured-products">
@@ -37,10 +71,12 @@
                 <li>
                     @* categoryId sẽ được gửi về StoreController.Index(). *@
                     <a href="@Url.Action(
-         "Index",
-         "Store",
-         new { categoryId = category.CategoryID })">
-                        @category.CategoryName
+                         "Index",
+                         "Store",
+                         new { categoryId = category.CategoryID,
+                         keyword = Model.SearchTerm
+                         })">
+                                        @category.CategoryName
                     </a>
                 </li>
             }
@@ -48,33 +84,89 @@
     </aside>
 
     <section>
-        <!-- Lưới chứa các Product Card -->
-        <div class="product-grid">
-            @* Duyệt từng sản phẩm trong Model *@
-            @foreach (var item in Model.Products)
+        <section>
+            @* ===== DANH SÁCH SẢN PHẨM ===== *@
+            @* Kiểm tra danh sách Products có sản phẩm hay không *@
+            @if (Model.Products.Any())
             {
-                <!-- Một card tương ứng một sản phẩm -->
-                <article class="product-card">
-                    <!-- Hiển thị ảnh từ Content/images -->
-                    <div class="product-image">
-                        <img src="~/Content/images/@item.ImagePro" alt="@item.NamePro" /> @* lấy tên ảnh từ item.ImagePro *@
-                    </div>
-                    <!-- Thông tin sản phẩm: danh mục, tên, giá -->
-                    <div class="product-body">
-                        <div style="color:#64748b;font-size:13px;">@item.CategoryName</div>
-                        <div class="product-name">@item.NamePro</div>
-                        <div class="product-description">
-                            @item.ShortDescription
-                        </div>
-                        <div class="product-price">@item.Price.ToString("#,##0") đ</div> @* định dạng giá có phân cách hàng nghìn *@
-                        <!-- Nút Chi tiết/Mua sẽ nối chức năng ở buổi sau -->
-                        <div class="product-actions">
-                            <a class="btn-soft" href="#">Chi tiết</a>
-                            <a class="btn-brand" href="#">Mua</a>
-                        </div>
-                    </div>
-                </article>
+                @* Có sản phẩm → hiển thị danh sách sản phẩm *@
+                <div class="product-grid">
+
+                    @foreach (var item in Model.Products)
+                    {
+                        <article class="product-card">
+
+                            <div class="product-image">
+
+                                @* Hiển thị ảnh sản phẩm từ Content/images *@
+                                <img src="~/Content/images/@item.ImagePro"
+                                     alt="@item.NamePro" />
+
+                            </div>
+
+                            <div class="product-body">
+
+                                @* Tên danh mục của sản phẩm *@
+                                <div style="color:#64748b;font-size:13px;">
+                                    @item.CategoryName
+                                </div>
+
+                                @* Tên sản phẩm *@
+                                <div class="product-name">
+                                    @item.NamePro
+                                </div>
+
+                                @* Mô tả ngắn sản phẩm *@
+                                <div class="product-description">
+                                    @item.ShortDescription
+                                </div>
+
+                                @* Đơn giá, định dạng có dấu phân cách hàng nghìn *@
+                                <div class="product-price">
+                                    @item.Price.ToString("#,##0") đ
+                                </div>
+
+                                <div class="product-actions">
+
+                                    @* Chức năng Chi tiết sẽ hoàn thiện sau *@
+                                    <a class="btn-soft" href="#">
+                                        Chi tiết
+                                    </a>
+
+                                    @* B07 mới thực hiện chức năng Giỏ hàng *@
+                                    <a class="btn-brand" href="#">
+                                        Mua
+                                    </a>
+
+                                </div>
+
+                            </div>
+
+                        </article>
+                    }
+
+                </div>
             }
-        </div>
+            else
+            {
+                @* Không có sản phẩm phù hợp sau khi lọc hoặc tìm kiếm *@
+                <div class="catalog-empty">
+
+                    <h3>Không tìm thấy sản phẩm phù hợp</h3>
+
+                    <p>
+                        Không có sản phẩm nào phù hợp với
+                        các điều kiện lọc hoặc từ khóa đang chọn.
+                    </p>
+
+                    @* Quay về Trang Chủ và xóa toàn bộ điều kiện lọc / tìm kiếm *@
+                    <a class="btn-brand"
+                       href="@Url.Action("Index", "Store")">
+                        Xem tất cả sản phẩm
+                    </a>
+
+                </div>
+            }
+</div>
     </section>
 </div>
