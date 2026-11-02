@@ -199,16 +199,64 @@ Product product,
         }
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "ProductID,ProductName,Description,CategoryID,Price,ImageUrl,StockQuantity,IsActive")] Product product)
+        public ActionResult Edit(
+      [Bind(Include = "ProductID,ProductName,Description,CategoryID,Price,StockQuantity,IsActive")]
+    Product product,
+      HttpPostedFileBase imageFile)
         {
+            Product existingProduct = db.Product.Find(product.ProductID);
+
+            if (existingProduct == null)
+            {
+                return HttpNotFound();
+            }
+
+            if (imageFile != null && imageFile.ContentLength > 0)
+            {
+                string extension = Path.GetExtension(imageFile.FileName).ToLower();
+                string[] allowedExtensions = { ".jpg", ".jpeg", ".png" };
+
+                if (!allowedExtensions.Contains(extension))
+                {
+                    ModelState.AddModelError(
+                        "ImageUrl",
+                        "Chỉ chấp nhận file JPG, JPEG hoặc PNG.");
+                }
+                else if (imageFile.ContentLength > 2 * 1024 * 1024)
+                {
+                    ModelState.AddModelError(
+                        "ImageUrl",
+                        "Dung lượng ảnh tối đa là 2 MB.");
+                }
+            }
+
             if (ModelState.IsValid)
             {
-                db.Entry(product).State = EntityState.Modified;
+                existingProduct.ProductName = product.ProductName;
+                existingProduct.Description = product.Description;
+                existingProduct.CategoryID = product.CategoryID;
+                existingProduct.Price = product.Price;
+                existingProduct.StockQuantity = product.StockQuantity;
+                existingProduct.IsActive = product.IsActive;
+
+                // Chỉ cập nhật ảnh khi người dùng chọn ảnh mới.
+                if (imageFile != null && imageFile.ContentLength > 0)
+                {
+                    existingProduct.ImageUrl = SaveImage(imageFile);
+                }
+
                 db.SaveChanges();
+
                 return RedirectToAction("Index");
             }
-            ViewBag.CategoryID = new SelectList(db.Category, "CategoryID", "CategoryName", product.CategoryID);
-            return View(product);
+
+            ViewBag.CategoryID = new SelectList(
+                db.Category,
+                "CategoryID",
+                "CategoryName",
+                product.CategoryID);
+
+            return View(existingProduct);
         }
 
         // GET: Products/Delete/5

@@ -92,39 +92,42 @@
             </div>
         </div>
 
-        div class="form-group">
-        <label class="control-label col-md-2">Hình sản phẩm</label>
+        <div class="form-group">
+            <label class="control-label col-md-2">
+                Hình sản phẩm
+            </label>
+        </div>
 
-        <div class="col-md-10">
-            <div style="display:flex; align-items:center; gap:15px; flex-wrap:wrap;">
-                <input type="file"
-                       id="imageFile"
-                       name="imageFile"
-                       class="form-control"
-                       accept=".jpg,.jpeg,.png"
-                       onchange="previewImage(event)" />
+            <div class="col-md-10">
+                <div style="display:flex; align-items:center; gap:15px; flex-wrap:wrap;">
+                    <input type="file"
+                           id="imageFile"
+                           name="imageFile"
+                           class="form-control"
+                           accept=".jpg,.jpeg,.png"
+                           onchange="previewImage(event)" />
 
-                <img id="imagePreview"
-                     alt="Ảnh xem trước"
-                     style="display:none;
+                    <img id="imagePreview"
+                         alt="Ảnh xem trước"
+                         style="display:none;
                     width:120px;
                     height:120px;
                     object-fit:cover;
                     border-radius:10px;
                     border:1px solid #ddd;" />
+                </div>
+
+
+                @Html.ValidationMessage(
+                    "ImageUrl",
+                    "",
+                    new { @class = "text-danger" })
+
+                <small class="text-muted">
+                    Chọn file JPG, JPEG hoặc PNG. Dung lượng tối đa 2 MB.
+                </small>
             </div>
-
-
-            @Html.ValidationMessage(
-                "ImageUrl",
-                "",
-                new { @class = "text-danger" })
-
-            <small class="text-muted">
-                Chọn file JPG, JPEG hoặc PNG. Dung lượng tối đa 2 MB.
-            </small>
         </div>
-    </div>
 
     <div class="form-group">
         @Html.LabelFor(
