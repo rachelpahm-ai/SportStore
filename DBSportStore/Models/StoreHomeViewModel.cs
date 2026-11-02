@@ -13,6 +13,9 @@ namespace DBSportStore.Models
         // Danh sách sản phẩm đang bán để Trang Chủ tiếp tục hiển thị.
         public List<ProductCardViewModel> Products { get; set; }
 
+        // Mã danh mục người dùng đang chọn.
+        // int? cho phép null = không lọc danh mục.
+        public int? SelectedCategoryId { get; set; }
     }
 }
 //StoreHomeViewModel gom hai loại dữ liệu mà Trang Chủ cần cùng lúc: Categories để tạo danh sách danh mục và Products để hiển thị các card sản phẩm.
