@@ -19,7 +19,15 @@ namespace DBSportStore.Models
         // int? cho phép null = không lọc danh mục.
         public int? SelectedCategoryId { get; set; }
 
+<<<<<<< HEAD
         // Từ khóa người dùng đang tìm kiếm.
         public string SearchTerm { get; set; }
+=======
+        // Trang hiện tại.
+        public int CurrentPage { get; set; }
+
+        // Tổng số trang.
+        public int TotalPages { get; set; }
+>>>>>>> 5761ff9 (5.1. Bổ sung thông tin phân trang vào StoreHomeViewModel)
     }
 }
