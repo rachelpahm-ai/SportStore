@@ -20,17 +20,31 @@ namespace DBSportStore.Controllers
         // Action Index xử lý URL /Store/Index
 
 
-        public ActionResult Index(int? categoryId)
+        public ActionResult Index(
+            int? categoryId,
+            string keyword)
         {
-            // Bắt đầu từ toàn bộ sản phẩm đang bán.
+            // Bắt đầu từ sản phẩm đang bán.
             var products = db.Product
                 .Where(p => p.IsActive);
 
-            // Nếu có categoryId, chỉ giữ các Product thuộc Category đó.
+            // Lọc theo danh mục nếu có categoryId.
             if (categoryId.HasValue)
             {
                 products = products.Where(
                     p => p.CategoryID == categoryId.Value);
+            }
+
+            // Tìm kiếm nếu người dùng có nhập từ khóa.
+            if (!string.IsNullOrWhiteSpace(keyword))
+            {
+                // Bỏ khoảng trắng thừa ở đầu/cuối.
+                keyword = keyword.Trim();
+
+                // Chỉ giữ Product có tên hoặc mô tả chứa từ khóa.
+                products = products.Where(
+                    p => p.ProductName.Contains(keyword)
+                      || p.Description.Contains(keyword));
             }
 
             var model = new StoreHomeViewModel
@@ -50,8 +64,8 @@ namespace DBSportStore.Controllers
                     })
                     .ToList(),
 
-                // Ghi nhớ danh mục đang lọc.
-                SelectedCategoryId = categoryId
+                SelectedCategoryId = categoryId,
+                SearchTerm = keyword
             };
 
             return View(model);
