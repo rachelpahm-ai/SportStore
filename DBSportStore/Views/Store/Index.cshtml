@@ -25,13 +25,23 @@
     <aside class="category-panel">
         <h3>Danh mục</h3>
         <ul class="category-list">
-            <li>Tất cả sản phẩm</li>
+            <li>
+                @* Không truyền categoryId => xem toàn bộ sản phẩm. *@
+                <a href="@Url.Action("Index", "Store")">
+                    Tất cả sản phẩm
+                </a>
+            </li>
 
-            @* Duyệt danh sách Category do Controller gửi sang. *@
             @foreach (var category in Model.Categories)
             {
                 <li>
-                    @category.CategoryName
+                    @* categoryId sẽ được gửi về StoreController.Index(). *@
+                    <a href="@Url.Action(
+         "Index",
+         "Store",
+         new { categoryId = category.CategoryID })">
+                        @category.CategoryName
+                    </a>
                 </li>
             }
         </ul>
