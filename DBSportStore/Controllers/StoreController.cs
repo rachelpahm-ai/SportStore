@@ -22,22 +22,29 @@ namespace DBSportStore.Controllers
 
         public ActionResult Index()
         {
-            // Lấy các sản phẩm đang bán từ bảng Product
-            // và chuyển sang ProductCardViewModel để View Trang Chủ tiếp tục sử dụng.
-            var products = db.Product
-                .Where(p => p.IsActive)
-                .Select(p => new ProductCardViewModel
-                {
-                    ProductID = p.ProductID,
-                    NamePro = p.ProductName,
-                    CategoryName = p.Category.CategoryName,
-                    Price = p.Price,
-                    ImagePro = p.ImageUrl
-                })
-                .ToList();
+            var model = new StoreHomeViewModel
+            {
+                // Lấy toàn bộ Category từ CSDL và sắp xếp theo tên.
+                Categories = db.Category
+            .OrderBy(c => c.CategoryName)
+            .ToList(),
 
-            return View(products);
+                // Giữ nguyên cách lấy sản phẩm đang bán của B05.
+                Products = db.Product
+            .Where(p => p.IsActive)
+            .Select(p => new ProductCardViewModel
+            {
+                ProductID = p.ProductID,
+                NamePro = p.ProductName,
+                CategoryName = p.Category.CategoryName,
+                Price = p.Price,
+                ImagePro = p.ImageUrl
+            })
+            .ToList()
+            };
 
+            // Gửi StoreHomeViewModel thay cho một List<ProductCardViewModel>.
+            return View(model);
 
         }
         public ActionResult AboutStore()
