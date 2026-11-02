@@ -20,32 +20,41 @@ namespace DBSportStore.Controllers
         // Action Index xử lý URL /Store/Index
 
 
-        public ActionResult Index()
+        public ActionResult Index(int? categoryId)
         {
+            // Bắt đầu từ toàn bộ sản phẩm đang bán.
+            var products = db.Product
+                .Where(p => p.IsActive);
+
+            // Nếu có categoryId, chỉ giữ các Product thuộc Category đó.
+            if (categoryId.HasValue)
+            {
+                products = products.Where(
+                    p => p.CategoryID == categoryId.Value);
+            }
+
             var model = new StoreHomeViewModel
             {
-                // Lấy toàn bộ Category từ CSDL và sắp xếp theo tên.
                 Categories = db.Category
-            .OrderBy(c => c.CategoryName)
-            .ToList(),
+                    .OrderBy(c => c.CategoryName)
+                    .ToList(),
 
-                // Giữ nguyên cách lấy sản phẩm đang bán của B05.
-                Products = db.Product
-            .Where(p => p.IsActive)
-            .Select(p => new ProductCardViewModel
-            {
-                ProductID = p.ProductID,
-                NamePro = p.ProductName,
-                CategoryName = p.Category.CategoryName,
-                Price = p.Price,
-                ImagePro = p.ImageUrl
-            })
-            .ToList()
+                Products = products
+                    .Select(p => new ProductCardViewModel
+                    {
+                        ProductID = p.ProductID,
+                        NamePro = p.ProductName,
+                        CategoryName = p.Category.CategoryName,
+                        Price = p.Price,
+                        ImagePro = p.ImageUrl
+                    })
+                    .ToList(),
+
+                // Ghi nhớ danh mục đang lọc.
+                SelectedCategoryId = categoryId
             };
 
-            // Gửi StoreHomeViewModel thay cho một List<ProductCardViewModel>.
             return View(model);
-
         }
         public ActionResult AboutStore()
         {
