@@ -760,3 +760,108 @@ body {
     line-height: 1.5;
     margin-top: 5px;
 }
+
+
+/* =========================================================
+   B06 - TÌM KIẾM
+   Các style dùng cho thanh tìm kiếm và thông báo không có kết quả
+   ========================================================= */
+
+
+/* ==================== THANH TÌM KIẾM ==================== */
+
+/* Khối bao ngoài toàn bộ khu vực tìm kiếm */
+.catalog-toolbar {
+    margin: 20px 0 24px;
+    /* Khoảng cách:
+       - trên: 20px
+       - phải: 0
+       - dưới: 24px
+       - trái: 0
+    */
+}
+
+
+/* Form tìm kiếm */
+.catalog-search {
+    display: flex;
+    /* Sắp xếp ô nhập, nút Tìm kiếm, nút Xóa lọc
+       nằm trên cùng một hàng */
+
+    gap: 10px;
+    /* Khoảng cách giữa các phần tử trong form là 10px */
+
+    flex-wrap: wrap;
+    /* Nếu màn hình hẹp, các phần tử được phép xuống hàng
+       thay vì tràn ra ngoài */
+}
+
+
+    /* ==================== Ô NHẬP TỪ KHÓA ==================== */
+
+    /* Chỉ áp dụng cho input type="text"
+   nằm bên trong class catalog-search */
+    .catalog-search input[type="text"] {
+        flex: 1;
+        /* Ô tìm kiếm tự giãn để chiếm phần không gian còn lại */
+
+        min-width: 240px;
+        /* Chiều rộng tối thiểu của ô tìm kiếm là 240px */
+
+        padding: 11px 14px;
+        /* Khoảng cách giữa nội dung và viền:
+       - trên/dưới: 11px
+       - trái/phải: 14px
+    */
+
+        border: 1px solid #cbd5e1;
+        /* Tạo viền xám nhạt dày 1px */
+
+        border-radius: 10px;
+        /* Bo tròn 4 góc của ô nhập */
+
+        outline: none;
+        /* Bỏ đường viền mặc định của trình duyệt
+       khi người dùng click vào ô nhập */
+    }
+
+
+/* ==================== KHÔNG CÓ KẾT QUẢ ==================== */
+
+/* Khối thông báo khi Model.Products không có sản phẩm */
+.catalog-empty {
+    padding: 24px;
+    /* Tạo khoảng trống bên trong khối thông báo */
+
+    background: #ffffff;
+    /* Nền màu trắng */
+
+    border: 1px solid #e2e8f0;
+    /* Viền xám nhạt */
+
+    border-radius: 12px;
+    /* Bo tròn góc khối thông báo */
+
+    color: #64748b;
+    /* Màu chữ xám xanh nhạt */
+
+    text-align: center;
+    /* Canh giữa nội dung trong khối */
+}
+    /* Tiêu đề trong khối không có kết quả */
+    .catalog-empty h3 {
+        margin-bottom: 8px;
+        /* Tạo khoảng cách dưới tiêu đề */
+    }
+
+
+    /* Đoạn mô tả trong khối không có kết quả */
+    .catalog-empty p {
+        margin-bottom: 18px;
+        /* Tạo khoảng cách trước nút */
+
+        color: #64748b;
+        /* Dùng màu chữ nhẹ hơn tiêu đề */
+    }
+
+
