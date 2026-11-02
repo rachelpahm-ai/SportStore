@@ -18,5 +18,8 @@ namespace DBSportStore.Models
         // Mã danh mục người dùng đang chọn.
         // int? cho phép null = không lọc danh mục.
         public int? SelectedCategoryId { get; set; }
+
+        // Từ khóa người dùng đang tìm kiếm.
+        public string SearchTerm { get; set; }
     }
 }
