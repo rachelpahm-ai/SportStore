@@ -18,7 +18,7 @@ namespace DBSportStore.Controllers
     {
         // Hàm dùng chung để lưu file ảnh vào thư mục Content/images
         // Giữ tên file gốc để dễ đối chiếu với dữ liệu trong CSDL.
-        // Nếu đã có file trùng tên, tự thêm -1, -2, ... để tránh ghi đè.
+        // Nếu đã có file trùng tên, tự thêm -1, -2, ...    để tránh ghi đè.
         private string SaveImage(HttpPostedFileBase imageFile)
         {
             // Chỉ lấy tên file, không lấy đường dẫn thư mục trên máy người dùng.

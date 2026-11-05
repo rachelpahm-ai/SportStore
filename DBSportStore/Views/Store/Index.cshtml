@@ -156,10 +156,14 @@
 
                             <div class="product-actions">
 
-                                @* Chức năng Chi tiết sẽ hoàn thiện sau *@
-                                <a class="btn-soft" href="#">
-                                    Chi tiết
-                                </a>
+                                @* Chức năng Chi tiết *@
+                                @Html.ActionLink(
+                                    "Chi tiết",                  // Chữ hiển thị
+                                    "Details",                   // Action Details
+                                    "Products",                  // ProductsController
+                                    new { id = item.ProductID }, // Gửi ProductID của sản phẩm đang xem
+                                    new { @class = "btn-soft" }  // Giữ nguyên CSS
+                                    )
 
                                 @* B07 mới thực hiện chức năng Giỏ hàng *@
                                 <a class="btn-brand" href="#">
