@@ -865,3 +865,95 @@ body {
     }
 
 
+/* =========================================================
+   B06 - PHÂN TRANG
+   Các style dùng cho các nút Trước, số trang, Sau
+   ========================================================= */
+
+
+/* ==================== KHỐI PHÂN TRANG ==================== */
+
+/* Khối bao ngoài toàn bộ các nút phân trang */
+.store-pagination {
+    display: flex;
+    /* Sắp xếp các nút phân trang trên cùng một hàng */
+
+    justify-content: center;
+    /* Canh giữa toàn bộ nhóm nút phân trang */
+
+    gap: 6px;
+    /* Khoảng cách giữa các nút là 6px */
+
+    flex-wrap: wrap;
+    /* Nếu màn hình hẹp, các nút được phép xuống hàng */
+
+    margin-top: 24px;
+    /* Tạo khoảng cách 24px phía trên,
+       tách phân trang khỏi danh sách sản phẩm */
+}
+
+
+    /* ==================== KIỂU CHUNG CHO CÁC NÚT ==================== */
+
+    /* Áp dụng chung cho:
+   - thẻ <a>: các trang có thể click
+   - thẻ <span>: trang hiện tại */
+    .store-pagination a,
+    .store-pagination span {
+        min-width: 36px;
+        /* Chiều rộng tối thiểu của mỗi nút */
+
+        padding: 8px 11px;
+        /* Khoảng cách nội dung với viền:
+       - trên/dưới: 8px
+       - trái/phải: 11px
+    */
+
+        border: 1px solid #cbd5e1;
+        /* Viền xám nhạt dày 1px */
+
+        border-radius: 8px;
+        /* Bo tròn các góc của nút */
+
+        background: #ffffff;
+        /* Nền trắng */
+
+        color: #0f172a;
+        /* Màu chữ xanh đen */
+
+        text-decoration: none;
+        /* Bỏ gạch chân mặc định của thẻ <a> */
+
+        text-align: center;
+        /* Canh giữa số trang hoặc chữ trong nút */
+    }
+
+
+    /* ==================== TRANG HIỆN TẠI ==================== */
+
+    /* Áp dụng cho:
+   <span class="active">...</span>
+   để làm nổi bật trang đang xem */
+    .store-pagination .active {
+        background: #2563eb;
+        /* Nền xanh cho trang hiện tại */
+
+        color: #ffffff;
+        /* Chữ màu trắng */
+
+        border-color: #2563eb;
+        /* Viền cùng màu với nền */
+
+        font-weight: 700;
+        /* Chữ đậm để trang hiện tại nổi bật hơn */
+    }
+
+
+    /* ==================== HIỆU ỨNG KHI RÊ CHUỘT ==================== */
+
+    /* Khi rê chuột lên các link phân trang */
+    .store-pagination a:hover {
+        background: #f1f5f9;
+        /* Đổi nền sang xám nhạt để người dùng biết
+       đây là nút có thể click */
+    }
