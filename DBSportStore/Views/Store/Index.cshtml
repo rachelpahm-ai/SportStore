@@ -46,6 +46,32 @@
            href="@Url.Action("Index", "Store")">
             Xóa lọc
         </a>
+        <input type="text"
+               name="keyword"
+               value="@Model.SearchTerm"
+               placeholder="Tìm tên hoặc mô tả sản phẩm..." />
+
+        @* MỚI: giá tối thiểu; có thể để trống *@
+        <input type="number"
+               name="minPrice"
+               value="@Model.MinPrice"
+               min="0"
+               step="1000"
+               placeholder="Giá từ" />
+
+        @* MỚI: giá tối đa; có thể để trống *@
+        <input type="number"
+               name="maxPrice"
+               value="@Model.MaxPrice"
+               min="0"
+               step="1000"
+               placeholder="Giá đến" />
+
+
+        <button type="submit" class="btn-brand">
+            Tìm kiếm
+        </button>
+
     }
 </div>
 
@@ -74,7 +100,9 @@
                          "Index",
                          "Store",
                          new { categoryId = category.CategoryID,
-                         keyword = Model.SearchTerm
+                         keyword = Model.SearchTerm,
+                         minPrice = Model.MinPrice,
+                         maxPrice = Model.MaxPrice   
                          })">
                         @category.CategoryName
                     </a>
