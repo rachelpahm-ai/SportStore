@@ -799,30 +799,16 @@ body {
 
     /* ==================== Ô NHẬP TỪ KHÓA ==================== */
 
-    /* Chỉ áp dụng cho input type="text"
-   nằm bên trong class catalog-search */
-    .catalog-search input[type="text"] {
-        flex: 1;
-        /* Ô tìm kiếm tự giãn để chiếm phần không gian còn lại */
-
-        min-width: 240px;
-        /* Chiều rộng tối thiểu của ô tìm kiếm là 240px */
-
-        padding: 11px 14px;
-        /* Khoảng cách giữa nội dung và viền:
-       - trên/dưới: 11px
-       - trái/phải: 14px
-    */
-
-        border: 1px solid #cbd5e1;
-        /* Tạo viền xám nhạt dày 1px */
-
-        border-radius: 10px;
-        /* Bo tròn 4 góc của ô nhập */
-
-        outline: none;
-        /* Bỏ đường viền mặc định của trình duyệt
-       khi người dùng click vào ô nhập */
+    /* Áp dụng chung cho ô từ khóa và hai ô Giá từ/Giá đến cho input type="text"
+nằm bên trong class catalog-search */
+    .catalog-search input[type="text"],
+    .catalog-search input[type="number"] {
+        flex: 1; /* Các ô tự giãn theo chiều ngang */
+        min-width: 170px; /* Không cho ô quá hẹp */
+        padding: 11px 14px; /* Khoảng cách chữ với viền */
+        border: 1px solid #cbd5e1; /* Viền xám nhạt */
+        border-radius: 10px; /* Bo góc */
+        outline: none; /* Bỏ outline mặc định */
     }
 
 
@@ -957,3 +943,5 @@ body {
         /* Đổi nền sang xám nhạt để người dùng biết
        đây là nút có thể click */
     }
+
+
