@@ -258,5 +258,74 @@
 
             </div>
         }
+
+        @* Hiển thị các số trang *@
+        @for (int i = 1; i <= Model.TotalPages; i++)
+        {
+            if (i == Model.CurrentPage)
+            {
+                @* Trang hiện tại không cần tạo link *@
+                <span class="active">@i</span>
+            }
+            else
+            {
+                <a href="@Url.Action(
+        "Index",
+        "Store",
+        new
+        {
+            categoryId = Model.SelectedCategoryId,
+            keyword = Model.SearchTerm,
+
+            // MỚI: giữ Price Filter khi chuyển trang.
+            minPrice = Model.MinPrice,
+            maxPrice = Model.MaxPrice,
+
+            page = i
+        })">
+                    @i
+                </a>
+            }
+        }
+
+        @* Nút quay về trang trước *@
+        @if (Model.CurrentPage > 1)
+        {
+            <a href="@Url.Action(
+    "Index",
+    "Store",
+    new
+    {
+        categoryId = Model.SelectedCategoryId,
+        keyword = Model.SearchTerm,
+        // MỚI: giữ Price Filter khi chuyển trang.
+        minPrice = Model.MinPrice,
+        maxPrice = Model.MaxPrice,
+
+        page = Model.CurrentPage - 1
+    })">
+                ← Trước
+            </a>
+        }
+
+        @* Nút sang trang kế tiếp *@
+        @if (Model.CurrentPage < Model.TotalPages)
+        {
+            <a href="@Url.Action(
+    "Index",
+    "Store",
+    new
+    {
+        categoryId = Model.SelectedCategoryId,
+        keyword = Model.SearchTerm,
+        // MỚI: giữ Price Filter khi chuyển trang.
+        minPrice = Model.MinPrice,
+        maxPrice = Model.MaxPrice,
+
+        page = Model.CurrentPage + 1
+    })">
+                Sau →
+            </a>
+        }
     </section>
 </div>
