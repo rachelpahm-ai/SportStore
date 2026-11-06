@@ -23,6 +23,9 @@ namespace DBSportStore.Models
         // Chức năng phân trang - Bước 5.1
         public int CurrentPage { get; set; }
         public int TotalPages { get; set; }
+
+        // Tổng số sản phẩm sau khi lọc và tìm kiếm
+        public int TotalItems { get; set; }
         //6. Chức năng 5 - Bổ sung lọc sản phẩm theo khoảng giá
         // Giá tối thiểu người dùng nhập.
         // decimal? cho phép để trống ô Giá từ.

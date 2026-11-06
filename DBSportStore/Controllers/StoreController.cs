@@ -120,7 +120,8 @@ namespace DBSportStore.Controllers
 
                 // Giữ nguyên thông tin phân trang.
                 CurrentPage = page,
-                TotalPages = totalPages
+                TotalPages = totalPages,
+                TotalItems = totalItems
             };
 
             return View(model);
