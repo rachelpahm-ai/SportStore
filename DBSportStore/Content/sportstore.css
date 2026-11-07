@@ -972,5 +972,120 @@ nằm bên trong class catalog-search */
     color: #1d4ed8;
 }
 
+/* =========================================================
+   B07 - GIỎ HÀNG
+   ========================================================= */
+/* Cho phép cuộn ngang nếu bảng quá rộng trên màn hình nhỏ */
+.cart-table-wrap {
+    overflow-x: auto;
+}
 
+
+/* Bảng giỏ hàng chiếm toàn bộ chiều rộng */
+.cart-table {
+    width: 100%;
+    border-collapse: collapse; /* Gộp đường viền giữa các ô */
+    background: #ffffff;
+}
+
+
+    /* Định dạng chung cho tiêu đề và ô dữ liệu */
+    .cart-table th,
+    .cart-table td {
+        padding: 12px;
+        border-bottom: 1px solid #e2e8f0;
+        text-align: left;
+        vertical-align: middle;
+    }
+
+
+/* Sắp xếp ảnh và thông tin sản phẩm trên cùng một hàng */
+.cart-product {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+
+    /* Kích thước ảnh sản phẩm trong giỏ */
+    .cart-product img {
+        width: 72px;
+        height: 72px;
+        object-fit: cover; /* Ảnh vừa khung, không méo */
+        border-radius: 10px;
+    }
+
+
+    /* Dòng hiển thị tồn kho */
+    .cart-product small {
+        display: block;
+        margin-top: 4px;
+        color: #64748b;
+    }
+
+
+/* Form cập nhật số lượng nằm trên cùng một hàng */
+.qty-form {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+
+    /* Ô nhập số lượng */
+    .qty-form input[type="number"] {
+        width: 75px;
+        padding: 8px;
+        border: 1px solid #cbd5e1;
+        border-radius: 8px;
+    }
+
+
+/* Khối tổng kết giỏ hàng */
+.cart-summary {
+    margin-top: 22px;
+    padding: 18px;
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+    /* sắp xếp nội dung theo chiều dọc */
+    display: flex;
+    flex-direction: column;
+    /* tạo khoảng cách giữa các dòng */
+    gap: 10px;
+}
+
+
+/* Tổng tiền */
+.cart-total {
+    margin-top: 0;
+    font-size: 18px;
+    /* tạo khoảng cách dòng đủ lớn */
+    line-height: 1.5;
+}
+
+
+/* Khu vực các nút */
+.cart-summary-actions {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    /* cách phần tổng tiền phía trên */
+    margin-top: 6px;
+}
+
+/* Khối thông báo chung */
+.cart-message {
+    margin-bottom: 14px;
+    padding: 12px 14px;
+    border-radius: 10px;
+}
+
+
+/* Màu thông báo lỗi */
+.cart-message-error {
+    background: #fef2f2;
+    border: 1px solid #fecaca;
+    color: #b91c1c;
+}
 
