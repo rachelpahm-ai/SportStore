@@ -1290,3 +1290,79 @@ nằm bên trong class catalog-search */
     }
 }
 
+/* =========================================================
+   B07 - ORDER SUCCESS
+   ========================================================= */
+
+
+/* ==================== KHỐI BAO TOÀN TRANG ==================== */
+
+.order-success {
+    /* Tạo khoảng trống phía trên và dưới nội dung */
+    padding: 22px 0;
+}
+
+
+/* ==================== PHẦN TIÊU ĐỀ THÀNH CÔNG ==================== */
+
+.order-success-head {
+    /* Tạo khoảng cách với phần thông tin đơn bên dưới */
+    margin-bottom: 20px;
+}
+
+
+/* ==================== BỐ CỤC THÔNG TIN ĐƠN HÀNG ==================== */
+
+.order-info-grid {
+    display: grid;
+    /* Chia thành 2 cột bằng nhau:
+       - cột thông tin đơn hàng
+       - cột thông tin giao hàng */
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    /* Khoảng cách giữa 2 cột */
+    gap: 18px;
+    /* Khoảng cách với phần Chi tiết đơn hàng */
+    margin-bottom: 24px;
+}
+
+
+/* ==================== TỪNG KHỐI THÔNG TIN ==================== */
+
+.order-info-card {
+    /* Khoảng cách nội dung với viền */
+    padding: 18px;
+    /* Nền trắng */
+    background: #ffffff;
+    /* Viền xám nhạt */
+    border: 1px solid #e2e8f0;
+    /* Bo tròn 4 góc */
+    border-radius: 12px;
+}
+
+
+    /* Tiêu đề bên trong mỗi card */
+    .order-info-card h3 {
+        /* Bỏ khoảng cách mặc định phía trên của h3 */
+        margin-top: 0;
+    }
+
+
+/* ==================== KHU VỰC NÚT THAO TÁC ==================== */
+
+.order-success-actions {
+    /* Tạo khoảng cách với bảng chi tiết đơn hàng */
+    margin-top: 20px;
+}
+
+
+/* ==================== HIỂN THỊ TRÊN MÀN HÌNH NHỎ ==================== */
+
+/* Khi màn hình có chiều rộng <= 760px */
+@media (max-width: 760px) {
+
+    .order-info-grid {
+        /* Chuyển từ 2 cột thành 1 cột
+           để dễ xem trên điện thoại */
+        grid-template-columns: 1fr;
+    }
+}
