@@ -1089,3 +1089,204 @@ nằm bên trong class catalog-search */
     color: #b91c1c;
 }
 
+
+/* =========================================================
+   B07 - CHECKOUT
+   ========================================================= */
+
+
+/* ==================== BỐ CỤC CHÍNH ==================== */
+
+.checkout-grid {
+    display: grid;
+    /* Cột trái rộng hơn để nhập thông tin,
+       cột phải hiển thị đơn hàng */
+    grid-template-columns: minmax(0, 1.35fr) minmax(360px, 1fr);
+    gap: 24px;
+    align-items: start;
+}
+
+
+/* Khung form và khung đơn hàng */
+.checkout-form,
+.checkout-summary {
+    padding: 22px;
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+}
+
+
+    /* Tiêu đề trong từng khối */
+    .checkout-form h3,
+    .checkout-summary h3 {
+        margin-top: 0;
+        margin-bottom: 20px;
+    }
+
+
+/* =========================================================
+   FORM THÔNG TIN KHÁCH HÀNG
+   ========================================================= */
+
+
+/* Mỗi dòng gồm 2 cột:
+   - Label
+   - Ô nhập */
+.checkout-row {
+    display: grid;
+    grid-template-columns: 150px minmax(0, 1fr);
+    gap: 14px;
+    align-items: start;
+    margin-bottom: 16px;
+}
+
+
+/* Cột Label */
+.checkout-label {
+    padding-top: 10px;
+    font-weight: 600;
+}
+
+
+/* Ô nhập chiếm hết chiều rộng cột */
+.checkout-input .form-control-modern {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 10px 12px;
+    border: 1px solid #cbd5e1;
+    border-radius: 9px;
+}
+
+
+    /* Khi click vào ô nhập */
+    .checkout-input .form-control-modern:focus {
+        outline: none;
+        border-color: #2563eb;
+    }
+
+
+/* Dòng chứa nút submit */
+.checkout-row-action {
+    margin-top: 8px;
+}
+
+
+/* =========================================================
+   TÓM TẮT ĐƠN HÀNG
+   ========================================================= */
+
+
+/* Một sản phẩm trong đơn hàng */
+.checkout-product {
+    display: grid;
+    /* Ảnh - thông tin - thành tiền */
+    grid-template-columns: 70px minmax(0, 1fr) auto;
+    gap: 12px;
+    align-items: center;
+    padding: 14px 0;
+    border-bottom: 1px solid #e2e8f0;
+}
+
+
+/* Ảnh sản phẩm */
+.checkout-product-image img {
+    width: 64px;
+    height: 64px;
+    object-fit: cover;
+    border-radius: 9px;
+    border: 1px solid #e2e8f0;
+}
+
+
+/* Tên sản phẩm */
+.checkout-product-info strong {
+    display: block;
+    margin-bottom: 6px;
+}
+
+
+/* Dòng số lượng / đơn giá */
+.checkout-product-detail {
+    margin-top: 3px;
+    font-size: 13px;
+    color: #64748b;
+}
+
+
+    /* Giá trị bên trong thông tin sản phẩm */
+    .checkout-product-detail span {
+        color: #0f172a;
+    }
+
+
+/* Thành tiền từng sản phẩm */
+.checkout-product-total {
+    font-weight: 700;
+    color: #dc2626;
+    white-space: nowrap;
+}
+
+
+/* =========================================================
+   TỔNG TIỀN ĐƠN HÀNG
+   ========================================================= */
+
+.checkout-grand-total {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 18px;
+    padding-top: 16px;
+    border-top: 2px solid #e2e8f0;
+    font-size: 18px;
+}
+
+
+    /* Làm nổi bật tổng tiền */
+    .checkout-grand-total strong {
+        color: #dc2626;
+    }
+
+
+/* =========================================================
+   RESPONSIVE
+   ========================================================= */
+
+@media (max-width: 900px) {
+
+    /* Màn hình nhỏ:
+       Form và đơn hàng chuyển thành 1 cột */
+    .checkout-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+
+@media (max-width: 600px) {
+
+    /* Trên điện thoại:
+       Label nằm trên ô nhập */
+    .checkout-row {
+        grid-template-columns: 1fr;
+        gap: 6px;
+    }
+
+    .checkout-label {
+        padding-top: 0;
+    }
+
+
+    /* Đơn hàng thu gọn còn:
+       ảnh + thông tin */
+    .checkout-product {
+        grid-template-columns: 60px minmax(0, 1fr);
+    }
+
+
+    /* Thành tiền xuống dòng dưới */
+    .checkout-product-total {
+        grid-column: 2;
+    }
+}
+
