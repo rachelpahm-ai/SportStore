@@ -36,15 +36,18 @@
                 @*<a href="#">Quản lý danh mục</a>
         <a href="#">Quản lý khách hàng</a>
         <a href="#">Quản lý đơn hàng</a>*@
-               
+
                 @Html.ActionLink("Quản lý danh mục", "Index", "Categories")
                 @Html.ActionLink("Quản lý khách hàng", "Index", "Customers")
                 @Html.ActionLink("Quản lý đơn hàng", "Index", "OrderProes")
-                
+
 
                 @* Các chức năng sẽ thực hiện ở các buổi sau *@
-                <a href="#">Giỏ hàng</a>
-                <a href="#">Đăng nhập</a>
+                @* Giỏ hàng *@
+                @{ Html.RenderAction(
+                       "BagCart",
+                       "ShoppingCart");
+                }                <a href="#">Đăng nhập</a>
             </nav>
         </div>
     </header>

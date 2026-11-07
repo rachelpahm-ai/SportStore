@@ -158,5 +158,33 @@ namespace DBSportStore.Controllers
             // Quay lại trang Giỏ hàng sau khi xóa.
             return RedirectToAction("ShowCart");
         }
+
+        // ==================== HIỂN THỊ THÔNG TIN GIỎ TRÊN NAVBAR ====================
+
+        // Action này chỉ được gọi từ View/Layout,
+        // không cho người dùng truy cập trực tiếp bằng URL.
+        [ChildActionOnly]
+        public PartialViewResult BagCart()
+        {
+            // Lấy Cart hiện tại từ Session.
+            // Nếu chưa có Cart thì biến cart sẽ bằng null.
+            var cart = Session["Cart"] as Cart;
+
+
+            // Nếu chưa có Cart -> số lượng = 0.
+            // Nếu có Cart -> tính tổng số lượng sản phẩm.
+            ViewBag.CartQty =
+                cart == null ? 0 : cart.TotalQuantity();
+
+
+            // Nếu chưa có Cart -> tổng tiền = 0.
+            // Nếu có Cart -> tính tổng tiền của giỏ.
+            ViewBag.CartTotal =
+                cart == null ? 0 : cart.TotalMoney();
+
+
+            // Gửi dữ liệu sang Partial View BagCart.cshtml.
+            return PartialView();
+        }
     }
 }
