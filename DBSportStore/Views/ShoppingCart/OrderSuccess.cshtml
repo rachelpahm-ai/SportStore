@@ -1,0 +1,59 @@
+﻿@* View nhận dữ liệu của đơn hàng vừa tạo *@
+@model DBSportStore.Models.OrderPro
+
+@{
+    // Tiêu đề trang và Layout chung
+    ViewBag.Title = "Đặt hàng thành công";
+    Layout = "~/Views/Shared/_StoreLayout.cshtml";
+}
+
+
+@* ==================== THÔNG BÁO ĐẶT HÀNG THÀNH CÔNG ==================== *@
+<div class="order-success">
+
+    <h2>Đặt hàng thành công</h2>
+
+
+    @* Hiển thị mã đơn hàng vừa được tạo *@
+    <p>
+        Mã đơn hàng của bạn:
+
+        <strong>
+            #@Model.OrderID
+        </strong>
+    </p>
+
+
+    @* Hiển thị tổng tiền của đơn hàng *@
+    <p>
+        Tổng tiền:
+
+        <strong>
+            @* Định dạng số có dấu phân cách hàng nghìn *@
+            @Model.TotalAmount.ToString("#,##0") đ
+        </strong>
+    </p>
+
+
+    @* Hiển thị trạng thái hiện tại của đơn hàng *@
+    <p>
+        Trạng thái:
+
+        <strong>
+            @Model.Status
+        </strong>
+    </p>
+
+
+    @* Nút quay về Trang Chủ sau khi đặt hàng thành công *@
+    @Html.ActionLink(
+            "Về Trang Chủ",        // Chữ hiển thị
+            "Index",               // Action cần gọi
+            "Store",               // StoreController
+            null,                  // Không truyền tham số
+            new
+            {
+                @class = "btn-brand"
+            })
+
+</div>

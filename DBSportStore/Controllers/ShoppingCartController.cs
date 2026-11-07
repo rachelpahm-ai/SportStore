@@ -440,5 +440,25 @@ namespace DBSportStore.Controllers
                 }
             }
         }
+        // ==================== HIỂN THỊ TRANG ĐẶT HÀNG THÀNH CÔNG ====================
+
+        // Nhận OrderID từ URL sau khi Checkout thành công.
+        public ActionResult OrderSuccess(int id)
+        {
+            // Tìm OrderPro trong CSDL theo OrderID.
+            var order = db.OrderPro.Find(id);
+
+            // Nếu không tìm thấy đơn hàng tương ứng
+            // thì trả về lỗi 404 - Not Found.
+            if (order == null)
+            {
+                return HttpNotFound();
+            }
+
+            // Gửi OrderPro sang View OrderSuccess.cshtml.
+            // Ở chức năng 6 chỉ cần hiển thị thông tin cơ bản
+            // để xác nhận đơn hàng đã được tạo thành công.
+            return View(order);
+        }
     }
 }
