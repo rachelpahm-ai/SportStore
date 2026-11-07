@@ -26,6 +26,8 @@ namespace DBSportStore.Models
 
         // Tổng số sản phẩm sau khi lọc và tìm kiếm
         public int TotalItems { get; set; }
+        // Lưu lựa chọn sắp xếp giá hiện tại
+        public string SortOrder { get; set; }
         //6. Chức năng 5 - Bổ sung lọc sản phẩm theo khoảng giá
         // Giá tối thiểu người dùng nhập.
         // decimal? cho phép để trống ô Giá từ.
@@ -34,6 +36,8 @@ namespace DBSportStore.Models
         // Giá tối đa người dùng nhập.
         // decimal? cho phép để trống ô Giá đến.
         public decimal? MaxPrice { get; set; }
+
+
 
 
     }

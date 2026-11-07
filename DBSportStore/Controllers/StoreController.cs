@@ -18,7 +18,9 @@ namespace DBSportStore.Controllers
        string keyword,
        decimal? minPrice,
        decimal? maxPrice,
-       int page = 1)
+       int page = 1,
+        string sortOrder = ""
+            )
         {
             // Quy định số sản phẩm mỗi trang.
             const int pageSize = 6;
@@ -84,19 +86,23 @@ namespace DBSportStore.Controllers
                 page = totalPages;
             }
 
+            // Sắp xếp sản phẩm trước khi phân trang
+            // Giá thấp đến cao hoặc giá cao đến thấp
+            var sortedProducts = sortOrder == "price_asc"
+                ? products.OrderBy(p => p.Price).ThenBy(p => p.ProductID)
+                : sortOrder == "price_desc"
+                    ? products.OrderByDescending(p => p.Price)
+                              .ThenBy(p => p.ProductID)
+                    : products.OrderByDescending(p => p.ProductID);
+
             var model = new StoreHomeViewModel
             {
                 Categories = db.Category
                     .OrderBy(c => c.CategoryName)
                     .ToList(),
 
-                Products = products
-                    // Phải sắp xếp trước khi Skip/Take.
-                    .OrderByDescending(p => p.ProductID)
-
-                    // Bỏ qua sản phẩm của các trang trước.
+                Products = sortedProducts
                     .Skip((page - 1) * pageSize)
-
                     // Chỉ lấy đúng số sản phẩm của trang hiện tại.
                     .Take(pageSize)
 
@@ -121,7 +127,8 @@ namespace DBSportStore.Controllers
                 // Giữ nguyên thông tin phân trang.
                 CurrentPage = page,
                 TotalPages = totalPages,
-                TotalItems = totalItems
+                TotalItems = totalItems,
+                SortOrder = sortOrder
             };
 
             return View(model);
