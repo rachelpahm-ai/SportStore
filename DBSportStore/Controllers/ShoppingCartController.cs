@@ -489,6 +489,11 @@ namespace DBSportStore.Controllers
             }
 
 
+            // B07 - Bài tập 3: Tính tổng số lượng sản phẩm
+            ViewBag.TotalQuantity = db.OrderDetail
+                .Where(d => d.OrderID == id)
+                .Sum(d => (int?)d.Quantity) ?? 0;
+
             // Gửi OrderPro cùng Customer, OrderDetail và Product
             // sang View OrderSuccess.cshtml để hiển thị đầy đủ đơn hàng.
             return View(order);
