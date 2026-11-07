@@ -160,6 +160,20 @@ namespace DBSportStore.Controllers
             return RedirectToAction("ShowCart");
         }
 
+
+        // B07 - Bài tập 1: Xóa toàn bộ giỏ hàng
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult ClearCart()
+        {
+            // Lấy giỏ hàng từ Session và xóa tất cả sản phẩm
+            GetCart().Clear();
+
+            // Quay về trang giỏ hàng
+            return RedirectToAction("ShowCart");
+        }
+
+
         // ==================== HIỂN THỊ THÔNG TIN GIỎ TRÊN NAVBAR ====================
 
         // Action này chỉ được gọi từ View/Layout,
@@ -479,5 +493,7 @@ namespace DBSportStore.Controllers
             // sang View OrderSuccess.cshtml để hiển thị đầy đủ đơn hàng.
             return View(order);
         }
+
+
     }
 }

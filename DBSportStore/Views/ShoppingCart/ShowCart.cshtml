@@ -199,6 +199,21 @@ else
             Tiến hành đặt hàng
         </a>
 
+        @* B07 - Bài tập 1: Xóa toàn bộ giỏ hàng *@
+        @using (Html.BeginForm(
+            "ClearCart",
+            "ShoppingCart",
+            FormMethod.Post))
+        {
+            @Html.AntiForgeryToken()
+
+            <button type="submit"
+                    class="btn-soft"
+                    onclick="return confirm('Bạn có chắc muốn xóa toàn bộ giỏ hàng?');">
+                Xóa toàn bộ giỏ hàng
+            </button>
+        }
+
     </div>
     </div>
 }
