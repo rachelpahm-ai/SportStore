@@ -179,22 +179,26 @@ else
 
         @* ==================== CÁC NÚT THAO TÁC ==================== *@
 
-        <div class="cart-summary-actions">
+    <div class="cart-summary-actions">
 
-            @* Quay lại Trang Chủ để mua thêm *@
-            @Html.ActionLink(
-                     "Tiếp tục mua hàng",
-                     "Index",
-                     "Store",
-                     null,
-                     new { @class = "btn-soft" })
+        @* Quay lại Trang Chủ để mua thêm *@
+        @Html.ActionLink(
+                 "Tiếp tục mua hàng",
+                 "Index",
+                 "Store",
+                 null,
+                 new { @class = "btn-soft" })
 
+        @* Chức năng Checkout - Tiến hành đặt hàng  *@
+        @* Nút chuyển từ Giỏ hàng sang trang Checkout.
+        Gọi ShoppingCartController.Checkout() *@
+        <a class="btn-brand"
+           href="@Url.Action(
+   "Checkout",
+   "ShoppingCart")">
+            Tiến hành đặt hàng
+        </a>
 
-            @* Chức năng Checkout sẽ hoàn thiện ở phần sau *@
-            <a class="btn-brand" href="#">
-                Tiến hành đặt hàng
-            </a>
-
-        </div>
+    </div>
     </div>
 }
