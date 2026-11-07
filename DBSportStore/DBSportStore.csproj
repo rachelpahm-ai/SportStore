@@ -143,6 +143,7 @@
     <Compile Include="Models\Category.cs">
       <DependentUpon>DBSportStoreModel.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\CheckoutViewModel.cs" />
     <Compile Include="Models\Customer.cs">
       <DependentUpon>DBSportStoreModel.tt</DependentUpon>
     </Compile>
