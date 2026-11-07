@@ -207,9 +207,15 @@
                                     )
 
                                 @* B07 mới thực hiện chức năng Giỏ hàng *@
-                                <a class="btn-brand" href="#">
-                                    Mua
-                                </a>
+
+                                @Html.ActionLink(
+                                    "Mua",
+                                    "AddToCart",
+                                    "ShoppingCart",
+                                    new { id = item.ProductID },
+                                    new { @class = "btn-brand" }
+                                )
+
 
                             </div>
 
