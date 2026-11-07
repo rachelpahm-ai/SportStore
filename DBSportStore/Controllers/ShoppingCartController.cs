@@ -186,5 +186,78 @@ namespace DBSportStore.Controllers
             // Gửi dữ liệu sang Partial View BagCart.cshtml.
             return PartialView();
         }
+        // ==================== MỞ FORM CHECKOUT ====================
+
+        // GET: hiển thị trang Checkout cho người dùng nhập thông tin.
+        public ActionResult Checkout()
+        {
+            // Lấy Cart hiện tại đang được lưu trong Session.
+            var cart = GetCart();
+
+            // Any() kiểm tra giỏ có ít nhất một sản phẩm hay không.
+            // Dấu ! nghĩa là phủ định -> giỏ KHÔNG có sản phẩm.
+            if (!cart.Items.Any())
+            {
+                // Giỏ trống thì quay lại trang ShowCart.
+                return RedirectToAction("ShowCart");
+            }
+
+            // Tạo ViewModel dùng cho trang Checkout.
+            var model = new CheckoutViewModel
+            {
+                // Gắn Cart vào ViewModel để View hiển thị
+                // danh sách sản phẩm và tổng tiền.
+                Cart = cart
+            };
+
+            // Gửi ViewModel sang Checkout.cshtml.
+            return View(model);
+        }
+
+
+        // ==================== NHẬN DỮ LIỆU TỪ FORM CHECKOUT ====================
+
+        // POST: action này chạy khi người dùng bấm nút submit form.
+        [HttpPost]
+
+        // Kiểm tra Anti-Forgery Token để bảo vệ form POST.
+        [ValidateAntiForgeryToken]
+        public ActionResult Checkout(
+            CheckoutViewModel model)
+        {
+            // Lấy lại Cart từ Session.
+            var cart = GetCart();
+
+            // Khi form POST gửi lên, Cart không tự được bind từ form,
+            // nên phải gắn lại Cart vào ViewModel.
+            model.Cart = cart;
+
+
+            // Không cho đặt hàng nếu giỏ đã trống.
+            if (!cart.Items.Any())
+            {
+                return RedirectToAction("ShowCart");
+            }
+
+
+            // ModelState.IsValid = true khi dữ liệu người dùng nhập
+            // thỏa các DataAnnotations trong CheckoutViewModel.
+            if (!ModelState.IsValid)
+            {
+                // Nếu dữ liệu sai -> trả lại View
+                // để hiển thị các thông báo Validation.
+                return View(model);
+            }
+
+
+            // Tạm thời chỉ xác nhận dữ liệu hợp lệ.
+            // Chức năng 6 mới thực hiện lưu Customer và Order vào CSDL.
+            ViewBag.CheckoutTest =
+                "Thông tin hợp lệ. "
+                + "Chức năng 6 sẽ lưu đơn hàng.";
+
+            // Hiển thị lại trang Checkout cùng thông báo trên.
+            return View(model);
+        }
     }
 }
