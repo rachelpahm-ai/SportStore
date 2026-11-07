@@ -1,4 +1,4 @@
-﻿@* View nhận dữ liệu của đơn hàng vừa tạo *@
+﻿@* View nhận dữ liệu của đơn hàng vừa đặt thành công *@
 @model DBSportStore.Models.OrderPro
 
 @{
@@ -8,52 +8,197 @@
 }
 
 
-@* ==================== THÔNG BÁO ĐẶT HÀNG THÀNH CÔNG ==================== *@
+@* ==================== KHỐI XÁC NHẬN ĐẶT HÀNG THÀNH CÔNG ==================== *@
 <div class="order-success">
 
-    <h2>Đặt hàng thành công</h2>
+    <div class="order-success-head">
+
+        <h2>Đặt hàng thành công</h2>
+
+        <p>
+            Cảm ơn bạn đã đặt hàng tại SPORTSTORE.
+        </p>
+
+    </div>
 
 
-    @* Hiển thị mã đơn hàng vừa được tạo *@
-    <p>
-        Mã đơn hàng của bạn:
+    @* ==================== THÔNG TIN TỔNG QUÁT CỦA ĐƠN HÀNG ==================== *@
 
-        <strong>
-            #@Model.OrderID
-        </strong>
-    </p>
+    @* order-info-grid chia thành 2 khối:
+        - Thông tin đơn hàng
+        - Thông tin giao hàng *@
+    <div class="order-info-grid">
 
 
-    @* Hiển thị tổng tiền của đơn hàng *@
-    <p>
-        Tổng tiền:
+        @* ==================== THÔNG TIN ĐƠN HÀNG ==================== *@
+        <div class="order-info-card">
 
-        <strong>
-            @* Định dạng số có dấu phân cách hàng nghìn *@
-            @Model.TotalAmount.ToString("#,##0") đ
-        </strong>
-    </p>
+            <h3>Thông tin đơn hàng</h3>
 
 
-    @* Hiển thị trạng thái hiện tại của đơn hàng *@
-    <p>
-        Trạng thái:
-
-        <strong>
-            @Model.Status
-        </strong>
-    </p>
+            @* Mã đơn hàng vừa được tạo *@
+            <p>
+                <strong>Mã đơn:</strong>
+                #@Model.OrderID
+            </p>
 
 
-    @* Nút quay về Trang Chủ sau khi đặt hàng thành công *@
-    @Html.ActionLink(
-            "Về Trang Chủ",        // Chữ hiển thị
-            "Index",               // Action cần gọi
-            "Store",               // StoreController
-            null,                  // Không truyền tham số
-            new
-            {
-                @class = "btn-brand"
-            })
+            @* Hiển thị ngày đặt theo định dạng ngày/tháng/năm giờ:phút *@
+            <p>
+                <strong>Ngày đặt:</strong>
+
+                @Model.OrderDate.ToString(
+                         "dd/MM/yyyy HH:mm")
+            </p>
+
+
+            @* Trạng thái hiện tại của đơn hàng *@
+            <p>
+                <strong>Trạng thái:</strong>
+                @Model.Status
+            </p>
+
+
+            @* Tổng tiền của toàn bộ đơn hàng *@
+            <p>
+                <strong>Tổng tiền:</strong>
+
+                <span class="product-price">
+                    @Model.TotalAmount.ToString("#,##0") đ
+                </span>
+            </p>
+
+        </div>
+
+
+        @* ==================== THÔNG TIN GIAO HÀNG ==================== *@
+        <div class="order-info-card">
+
+            <h3>Thông tin giao hàng</h3>
+
+
+            @* Tên người nhận đã lưu trong OrderPro *@
+            <p>
+                <strong>Người nhận:</strong>
+                @Model.RecipientName
+            </p>
+
+
+            @* Số điện thoại giao hàng đã lưu trong OrderPro *@
+            <p>
+                <strong>Số điện thoại:</strong>
+                @Model.ShippingPhone
+            </p>
+
+
+            @* Email lấy từ Customer liên kết với OrderPro *@
+            <p>
+                <strong>Email:</strong>
+                @Model.Customer.Email
+            </p>
+
+
+            @* Địa chỉ giao hàng đã lưu tại thời điểm đặt đơn *@
+            <p>
+                <strong>Địa chỉ giao:</strong>
+                @Model.ShippingAddress
+            </p>
+
+        </div>
+
+    </div>
+
+
+    @* ==================== CHI TIẾT ĐƠN HÀNG ==================== *@
+
+    <h3>Chi tiết đơn hàng</h3>
+
+    <div class="cart-table-wrap">
+
+        <table class="cart-table">
+
+            @* Tiêu đề các cột *@
+            <thead>
+                <tr>
+                    <th>Sản phẩm</th>
+                    <th>Đơn giá</th>
+                    <th>Số lượng</th>
+                    <th>Thành tiền</th>
+                </tr>
+            </thead>
+
+
+            <tbody>
+
+                @* Duyệt từng OrderDetail thuộc đơn hàng *@
+                @foreach (var detail in Model.OrderDetail)
+                {
+                    <tr>
+
+                        @* ==================== SẢN PHẨM ==================== *@
+                        <td>
+
+                            <div class="cart-product">
+
+                                @* Ảnh Product được lấy qua navigation property Product *@
+                                <img src="~/Content/images/@detail.Product.ImageUrl"
+                                     alt="@detail.Product.ProductName" />
+
+                                @* Tên sản phẩm *@
+                                <strong>
+                                    @detail.Product.ProductName
+                                </strong>
+
+                            </div>
+
+                        </td>
+
+
+                        @* ==================== ĐƠN GIÁ ==================== *@
+                        <td>
+
+                            @* UnitPrice là giá được lưu tại thời điểm đặt hàng *@
+                            @detail.UnitPrice.ToString("#,##0") đ
+
+                        </td>
+
+
+                        @* ==================== SỐ LƯỢNG ==================== *@
+                        <td>
+                            @detail.Quantity
+                        </td>
+
+
+                        @* ==================== THÀNH TIỀN ==================== *@
+                        <td class="product-price">
+
+                            @* Thành tiền = UnitPrice × Quantity *@
+                            @((detail.UnitPrice * detail.Quantity)
+                                .ToString("#,##0")) đ
+
+                        </td>
+
+                    </tr>
+                }
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+
+    @* ==================== NÚT TIẾP TỤC MUA HÀNG ==================== *@
+    <div class="order-success-actions">
+
+        @* Quay lại StoreController.Index() để tiếp tục mua sản phẩm *@
+        @Html.ActionLink(
+                 "Tiếp tục mua hàng",
+                 "Index",
+                 "Store",
+                 null,
+                 new { @class = "btn-brand" })
+
+    </div>
 
 </div>
