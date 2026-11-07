@@ -5,6 +5,7 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using DBSportStore.Models;
+using System.Data.Entity;
 
 namespace DBSportStore.Controllers
 {
@@ -443,21 +444,39 @@ namespace DBSportStore.Controllers
         // ==================== HIỂN THỊ TRANG ĐẶT HÀNG THÀNH CÔNG ====================
 
         // Nhận OrderID từ URL sau khi Checkout thành công.
+        // ==================== HIỂN THỊ TRANG ĐẶT HÀNG THÀNH CÔNG ====================
+
+        // Nhận OrderID từ URL sau khi Checkout thành công.     
+
         public ActionResult OrderSuccess(int id)
         {
-            // Tìm OrderPro trong CSDL theo OrderID.
-            var order = db.OrderPro.Find(id);
+            // Lấy OrderPro theo OrderID.
+            // Include(Customer) để lấy thêm thông tin khách hàng.
+            // Include(OrderDetail.Product) để lấy:
+            // - danh sách chi tiết đơn hàng
+            // - thông tin Product của từng dòng chi tiết.
+            var order = db.OrderPro
+                .Include(o => o.Customer)
 
-            // Nếu không tìm thấy đơn hàng tương ứng
-            // thì trả về lỗi 404 - Not Found.
+                // Với mỗi OrderDetail, lấy thêm Product tương ứng
+                // để View có thể hiển thị tên và ảnh sản phẩm.
+                .Include(o => o.OrderDetail.Select(
+                    d => d.Product))
+
+                // Chỉ lấy đúng đơn hàng có OrderID bằng id truyền vào.
+                // FirstOrDefault() trả về null nếu không tìm thấy.
+                .FirstOrDefault(o => o.OrderID == id);
+
+
+            // Nếu không tìm thấy đơn hàng thì trả về lỗi 404.
             if (order == null)
             {
                 return HttpNotFound();
             }
 
-            // Gửi OrderPro sang View OrderSuccess.cshtml.
-            // Ở chức năng 6 chỉ cần hiển thị thông tin cơ bản
-            // để xác nhận đơn hàng đã được tạo thành công.
+
+            // Gửi OrderPro cùng Customer, OrderDetail và Product
+            // sang View OrderSuccess.cshtml để hiển thị đầy đủ đơn hàng.
             return View(order);
         }
     }
