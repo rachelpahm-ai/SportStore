@@ -945,3 +945,32 @@ nằm bên trong class catalog-search */
     }
 
 
+/* ==========================================
+   B06 - BAI TAP 3: DANH MUC DANG DUOC CHON
+   ========================================== */
+
+/* Trang thai danh muc dang duoc chon */
+.category-list a.category-active {
+    display: block;
+    background-color: #e8f0ff;
+    color: #2563eb;
+    font-weight: 700;
+    border-radius: 8px;
+    padding: 10px 12px;
+    border-left: 4px solid #2563eb;
+}
+
+/* Hieu ung khi di chuot vao danh muc */
+.category-list a:hover {
+    background-color: #f1f5f9;
+    border-radius: 8px;
+}
+
+/* Van giu nen xanh khi hover vao danh muc active */
+.category-list a.category-active:hover {
+    background-color: #dbeafe;
+    color: #1d4ed8;
+}
+
+
+

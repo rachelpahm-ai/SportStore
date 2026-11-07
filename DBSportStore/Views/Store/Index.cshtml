@@ -120,32 +120,36 @@
     <!-- Danh mục tạm; Buổi 06 sẽ lấy từ database -->
     <aside class="category-panel">
         <h3>Danh mục</h3>
+
         <ul class="category-list">
+
+            @* Tất cả sản phẩm: active khi không chọn danh mục *@
             <li>
-                @* Không truyền categoryId => xem toàn bộ sản phẩm. *@
-                <a href="@Url.Action("Index", "Store")">
+                <a class="@(Model.SelectedCategoryId.HasValue ? "" : "category-active")"
+                   href="@Url.Action("Index", "Store")">
                     Tất cả sản phẩm
                 </a>
             </li>
 
+            @* Danh mục lấy từ database *@
             @foreach (var category in Model.Categories)
             {
                 <li>
-                    @* categoryId sẽ được gửi về StoreController.Index(). *@
-                    <a href="@Url.Action(
-                         "Index",
-                         "Store",
-                         new { categoryId = category.CategoryID,
-                         keyword = Model.SearchTerm,
-                         sortOrder = Model.SortOrder,
-                         minPrice = Model.MinPrice,
-                         maxPrice = Model.MaxPrice
-                         })">
+                    <a class="@(Model.SelectedCategoryId == category.CategoryID ? "category-active" : "")"
+                       href="@Url.Action("Index", "Store", new {
+                   categoryId = category.CategoryID,
+                   keyword = Model.SearchTerm,
+                   minPrice = Model.MinPrice,
+                   maxPrice = Model.MaxPrice,
+                   sortOrder = Model.SortOrder
+               })">
                         @category.CategoryName
                     </a>
                 </li>
             }
+
         </ul>
+
     </aside>
 
 
