@@ -215,49 +215,230 @@ namespace DBSportStore.Controllers
         }
 
 
-        // ==================== NHẬN DỮ LIỆU TỪ FORM CHECKOUT ====================
+        // ==================== NHẬN DỮ LIỆU CHECKOUT VÀ LƯU ĐƠN HÀNG ====================
 
-        // POST: action này chạy khi người dùng bấm nút submit form.
+        // Action này nhận dữ liệu từ form Checkout bằng phương thức POST.
         [HttpPost]
 
-        // Kiểm tra Anti-Forgery Token để bảo vệ form POST.
+        // Kiểm tra Anti-Forgery Token gửi từ View.
         [ValidateAntiForgeryToken]
         public ActionResult Checkout(
             CheckoutViewModel model)
         {
-            // Lấy lại Cart từ Session.
+            // Lấy Cart hiện tại đang lưu trong Session.
             var cart = GetCart();
 
-            // Khi form POST gửi lên, Cart không tự được bind từ form,
-            // nên phải gắn lại Cart vào ViewModel.
+            // Cart không được gửi từ form lên,
+            // nên phải gắn lại vào ViewModel để View vẫn hiển thị tóm tắt đơn hàng.
             model.Cart = cart;
 
 
-            // Không cho đặt hàng nếu giỏ đã trống.
+            // ==================== KIỂM TRA GIỎ HÀNG ====================
+
+            // Nếu giỏ không còn sản phẩm thì không cho đặt hàng.
+            // Any() kiểm tra danh sách có ít nhất một phần tử hay không.
             if (!cart.Items.Any())
             {
                 return RedirectToAction("ShowCart");
             }
 
 
+            // ==================== KIỂM TRA DỮ LIỆU KHÁCH HÀNG ====================
+
             // ModelState.IsValid = true khi dữ liệu người dùng nhập
-            // thỏa các DataAnnotations trong CheckoutViewModel.
+            // thỏa các Validation trong CheckoutViewModel.
             if (!ModelState.IsValid)
             {
-                // Nếu dữ liệu sai -> trả lại View
-                // để hiển thị các thông báo Validation.
+                // Nếu dữ liệu chưa hợp lệ thì trả lại form
+                // để hiển thị thông báo lỗi.
                 return View(model);
             }
 
 
-            // Tạm thời chỉ xác nhận dữ liệu hợp lệ.
-            // Chức năng 6 mới thực hiện lưu Customer và Order vào CSDL.
-            ViewBag.CheckoutTest =
-                "Thông tin hợp lệ. "
-                + "Chức năng 6 sẽ lưu đơn hàng.";
+            // ==================== KIỂM TRA LẠI TỒN KHO ====================
 
-            // Hiển thị lại trang Checkout cùng thông báo trên.
-            return View(model);
+            // Phải kiểm tra lại ngay trước khi tạo đơn
+            // vì tồn kho có thể đã thay đổi sau lúc Product được thêm vào Cart.
+            foreach (var item in cart.Items)
+            {
+                // Đọc Product mới nhất từ CSDL theo ProductID.
+                var product = db.Product.Find(item.ProductID);
+
+                // Không cho đặt nếu:
+                // - Product không còn tồn tại
+                // - Product đã ngừng bán
+                // - tồn kho hiện tại nhỏ hơn số lượng khách đặt
+                if (product == null
+                    || !product.IsActive
+                    || product.StockQuantity < item.Quantity)
+                {
+                    // Thêm lỗi chung vào ModelState để hiển thị trên Checkout View.
+                    ModelState.AddModelError(
+                        "",
+                        "Sản phẩm " + item.ProductName
+                        + " không còn đủ tồn kho.");
+
+                    return View(model);
+                }
+            }
+
+
+            // ==================== BẮT ĐẦU TRANSACTION ====================
+
+            // Transaction bảo đảm các thao tác:
+            // Customer + OrderPro + OrderDetail + cập nhật tồn kho
+            // phải cùng thành công.
+            // Nếu một bước lỗi thì toàn bộ thay đổi sẽ rollback.
+            using (var transaction =
+                db.Database.BeginTransaction())
+            {
+                try
+                {
+                    // =====================================================
+                    // 1. TẠO CUSTOMER MỚI CHO KHÁCH VÃNG LAI
+                    // =====================================================
+
+                    // B07 chưa có Login.
+                    // Mỗi lần Guest Checkout sẽ tạo một Customer mới.
+                    var customer = new Customer
+                    {
+                        // UserID = null nghĩa là Customer chưa có tài khoản.
+                        UserID = null,
+
+                        FullName = model.FullName,
+                        Phone = model.Phone,
+                        Email = model.Email,
+                        Address = model.Address
+                    };
+
+                    // Đánh dấu Customer mới cần được thêm vào CSDL.
+                    db.Customer.Add(customer);
+
+                    // Ghi Customer xuống CSDL.
+                    db.SaveChanges();
+
+                    // Sau SaveChanges(), SQL Server đã sinh CustomerID
+                    // và EF tự cập nhật giá trị vào customer.CustomerID.
+
+
+                    // =====================================================
+                    // 2. TẠO ORDERPRO
+                    // =====================================================
+
+                    var order = new OrderPro
+                    {
+                        // Ghi nhận thời điểm đặt hàng.
+                        OrderDate = System.DateTime.Now,
+
+                        // Gắn đơn hàng với Customer vừa được tạo.
+                        CustomerID = customer.CustomerID,
+
+                        // Lưu snapshot thông tin giao hàng trên chính đơn hàng.
+                        // Sau này Customer thay đổi thông tin,
+                        // đơn cũ vẫn giữ đúng dữ liệu lúc đặt.
+                        RecipientName = model.FullName,
+                        ShippingPhone = model.Phone,
+                        ShippingAddress = model.ShippingAddress,
+
+                        // Tổng tiền lấy từ Cart hiện tại.
+                        TotalAmount = cart.TotalMoney(),
+
+                        // Trạng thái ban đầu của đơn.
+                        Status = "Chờ xử lý"
+                    };
+
+                    // Đánh dấu OrderPro mới cần thêm vào CSDL.
+                    db.OrderPro.Add(order);
+
+                    // Ghi OrderPro xuống CSDL.
+                    db.SaveChanges();
+
+                    // Sau SaveChanges(), SQL Server đã sinh OrderID
+                    // và EF cập nhật vào order.OrderID.
+
+
+                    // =====================================================
+                    // 3. TẠO CÁC ORDERDETAIL
+                    // =====================================================
+
+                    // Mỗi CartItem sẽ tạo thành một dòng OrderDetail.
+                    foreach (var item in cart.Items)
+                    {
+                        // Đọc lại Product để cập nhật tồn kho.
+                        var product = db.Product.Find(
+                            item.ProductID);
+
+
+                        // Tạo chi tiết đơn hàng cho Product hiện tại.
+                        var detail = new OrderDetail
+                        {
+                            // Gắn chi tiết vào OrderPro vừa tạo.
+                            OrderID = order.OrderID,
+
+                            ProductID = item.ProductID,
+
+                            // Số lượng khách đặt.
+                            Quantity = item.Quantity,
+
+                            // Lưu đơn giá tại thời điểm đặt hàng.
+                            // Không lấy lại Product.Price sau này.
+                            UnitPrice = item.UnitPrice
+                        };
+
+
+                        // Thêm OrderDetail vào CSDL.
+                        db.OrderDetail.Add(detail);
+
+
+                        // Trừ tồn kho theo số lượng vừa đặt.
+                        product.StockQuantity -= item.Quantity;
+                    }
+
+
+                    // Ghi toàn bộ OrderDetail và tồn kho mới xuống CSDL.
+                    db.SaveChanges();
+
+
+                    // ==================== COMMIT TRANSACTION ====================
+
+                    // Tất cả thao tác phía trên đều thành công
+                    // thì xác nhận lưu toàn bộ thay đổi.
+                    transaction.Commit();
+
+
+                    // ==================== XÓA GIỎ HÀNG ====================
+
+                    // Chỉ xóa Cart SAU KHI transaction đã commit thành công.
+                    // Nếu lưu đơn bị lỗi thì giỏ vẫn còn để khách thử lại.
+                    cart.Clear();
+
+
+                    // ==================== CHUYỂN SANG TRANG THÀNH CÔNG ====================
+
+                    // Chuyển sang OrderSuccess và gửi OrderID vừa tạo.
+                    return RedirectToAction(
+                        "OrderSuccess",
+                        new { id = order.OrderID });
+                }
+                catch
+                {
+                    // ==================== XỬ LÝ KHI CÓ LỖI ====================
+
+                    // Nếu có lỗi trong quá trình lưu,
+                    // hủy toàn bộ thay đổi của transaction.
+                    transaction.Rollback();
+
+
+                    // Thêm thông báo lỗi để hiển thị lại trên Checkout View.
+                    ModelState.AddModelError(
+                        "",
+                        "Có lỗi khi lưu đơn hàng. "
+                        + "Vui lòng thử lại.");
+
+                    // Giữ nguyên Cart và dữ liệu người dùng đã nhập.
+                    return View(model);
+                }
+            }
         }
     }
 }
