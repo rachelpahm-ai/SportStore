@@ -1,0 +1,38 @@
+﻿
+@model DBSportStore.Models.Cart
+@using System.Linq
+
+@{
+    ViewBag.Title = "Giỏ hàng";
+    Layout = "~/Views/Shared/_StoreLayout.cshtml";
+}
+
+<h2 class="section-title">Giỏ hàng</h2>
+
+@if (!Model.Items.Any())
+{
+    <div class="catalog-empty">
+        Giỏ hàng đang trống.
+    </div>
+}
+else
+{
+    <ul>
+        @foreach (var item in Model.Items)
+        {
+            <li>
+                @item.ProductName
+                - Số lượng: @item.Quantity
+            </li>
+        }
+    </ul>
+}
+
+<p>
+    @Html.ActionLink(
+        "Tiếp tục mua hàng",
+        "Index",
+        "Store",
+        null,
+        new { @class = "btn-soft" })
+</p>
