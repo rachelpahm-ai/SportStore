@@ -208,13 +208,26 @@
 
                                 @* B07 mới thực hiện chức năng Giỏ hàng *@
 
-                                @Html.ActionLink(
-                                    "Mua",
-                                    "AddToCart",
-                                    "ShoppingCart",
-                                    new { id = item.ProductID },
-                                    new { @class = "btn-brand" }
-                                )
+
+                                @* B07 - Bài tập 2: Kiểm tra tồn kho *@
+
+                                @if (item.StockQuantity > 0 && item.IsActive)
+                                {
+                                    @Html.ActionLink(
+                                        "Mua",
+                                        "AddToCart",
+                                        "ShoppingCart",
+                                        new { id = item.ProductID },
+                                        new { @class = "btn-brand" }
+                                    )
+                                }
+                                else
+                                {
+                                    <span class="btn-out-of-stock">
+                                        Hết hàng
+                                    </span>
+                                }
+
 
 
                             </div>

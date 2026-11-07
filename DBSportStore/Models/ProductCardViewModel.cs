@@ -9,6 +9,8 @@ namespace DBSportStore.Models
         public decimal Price { get; set; } // đơn giá
         public string ImagePro { get; set; } // tên file ảnh trong Content/images
         public string ShortDescription { get; set; } // Mô tả ngắn về sản phẩm
+        public int StockQuantity { get; set; }
+        public bool IsActive { get; set; }
 
     }
 }
