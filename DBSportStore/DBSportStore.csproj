@@ -304,10 +304,10 @@
     <Content Include="Views\ShoppingCart\BagCart.cshtml" />
     <Content Include="Views\ShoppingCart\Checkout.cshtml" />
     <Content Include="Views\ShoppingCart\OrderSuccess.cshtml" />
+    <Content Include="Views\Account\SignUp.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
-    <Folder Include="Views\Account\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Content\bootstrap.rtl.min.css.map" />
