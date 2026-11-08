@@ -204,28 +204,70 @@ namespace DBSportStore.Controllers
         // ==================== MỞ FORM CHECKOUT ====================
 
         // GET: hiển thị trang Checkout cho người dùng nhập thông tin.
+        // =====================================================
+        // MỞ FORM CHECKOUT
+        // =====================================================
+
         public ActionResult Checkout()
         {
-            // Lấy Cart hiện tại đang được lưu trong Session.
+            // Lấy Cart hiện tại từ Session.
             var cart = GetCart();
 
-            // Any() kiểm tra giỏ có ít nhất một sản phẩm hay không.
-            // Dấu ! nghĩa là phủ định -> giỏ KHÔNG có sản phẩm.
+
+            // Không cho Checkout nếu giỏ trống.
             if (!cart.Items.Any())
             {
-                // Giỏ trống thì quay lại trang ShowCart.
                 return RedirectToAction("ShowCart");
             }
 
-            // Tạo ViewModel dùng cho trang Checkout.
+
+            // Tạo ViewModel cho trang Checkout.
             var model = new CheckoutViewModel
             {
-                // Gắn Cart vào ViewModel để View hiển thị
-                // danh sách sản phẩm và tổng tiền.
                 Cart = cart
             };
 
-            // Gửi ViewModel sang Checkout.cshtml.
+
+            // =================================================
+            // NẾU CUSTOMER ĐÃ LOGIN -> ĐIỀN SẴN HỒ SƠ
+            // =================================================
+
+            // CustomerID chỉ có khi Login bằng tài khoản
+            // đã gắn với một Customer.
+            if (Session["CustomerID"] != null)
+            {
+                // Session lưu object nên ép về int.
+                int customerId =
+                    (int)Session["CustomerID"];
+
+
+                var customer =
+                    db.Customer.Find(customerId);
+
+
+                if (customer != null)
+                {
+                    model.FullName =
+                        customer.FullName;
+
+                    model.Phone =
+                        customer.Phone;
+
+                    model.Email =
+                        customer.Email;
+
+                    model.Address =
+                        customer.Address;
+
+
+                    // Mặc định địa chỉ giao hàng
+                    // bằng địa chỉ hồ sơ Customer.
+                    model.ShippingAddress =
+                        customer.Address;
+                }
+            }
+
+
             return View(model);
         }
 
