@@ -1366,3 +1366,150 @@ nằm bên trong class catalog-search */
         grid-template-columns: 1fr;
     }
 }
+
+/* =========================================================
+   B08 - SIGN UP / LOGIN
+   ========================================================= */
+
+
+/* ==================== KHUNG BAO TOÀN TRANG AUTH ==================== */
+
+.auth-page {
+    /* Dùng Flexbox để dễ căn khối form đăng ký/đăng nhập */
+    display: flex;
+    /* Căn card nằm giữa theo chiều ngang */
+    justify-content: center;
+    /* Tạo khoảng cách phía trên và dưới trang */
+    padding: 28px 0;
+}
+
+
+/* ==================== CARD CHỨA FORM ==================== */
+
+.auth-card {
+    /* Card có thể chiếm toàn bộ chiều rộng vùng chứa */
+    width: 100%;
+    /* Nhưng không rộng quá 520px */
+    max-width: 520px;
+    /* Khoảng cách từ nội dung tới viền card */
+    padding: 24px;
+    /* Nền trắng */
+    background: #ffffff;
+    /* Viền xám nhạt */
+    border: 1px solid #e2e8f0;
+    /* Bo tròn 4 góc */
+    border-radius: 14px;
+}
+
+
+    /* ==================== TIÊU ĐỀ TRONG CARD ==================== */
+
+    .auth-card h2 {
+        /* Bỏ khoảng cách mặc định phía trên của thẻ h2 */
+        margin-top: 0;
+    }
+
+
+/* ==================== DÒNG MÔ TẢ DƯỚI TIÊU ĐỀ ==================== */
+
+.auth-subtitle {
+    /* Tạo khoảng cách với phần form phía dưới */
+    margin-bottom: 20px;
+    /* Màu chữ xám để phân biệt với tiêu đề chính */
+    color: #64748b;
+}
+
+
+/* ==================== MỖI Ô NHẬP DỮ LIỆU ==================== */
+
+.auth-field {
+    /* Tạo khoảng cách giữa các field:
+       Username, Password, Email... */
+    margin-bottom: 14px;
+}
+
+
+    /* ==================== LABEL CỦA INPUT ==================== */
+
+    .auth-field label {
+        /* Mỗi label nằm trên một dòng riêng */
+        display: block;
+        /* Tạo khoảng cách giữa label và ô input */
+        margin-bottom: 6px;
+        /* Làm chữ label đậm hơn */
+        font-weight: 600;
+    }
+
+
+    /* ==================== Ô INPUT ==================== */
+
+    .auth-field .form-control-modern {
+        /* Input chiếm toàn bộ chiều rộng của card */
+        width: 100%;
+        /*
+       box-sizing: border-box
+       giúp width: 100% đã bao gồm:
+       - padding
+       - border
+
+       Nhờ vậy input không bị rộng vượt ra ngoài card.
+    */
+        box-sizing: border-box;
+        /* Khoảng cách chữ bên trong input */
+        padding: 10px 12px;
+        /* Viền xám nhạt */
+        border: 1px solid #cbd5e1;
+        /* Bo tròn góc input */
+        border-radius: 9px;
+    }
+
+
+        /* ==================== KHI CLICK VÀO INPUT ==================== */
+
+        .auth-field .form-control-modern:focus {
+            /*
+       Bỏ đường viền focus mặc định
+       của trình duyệt.
+    */
+            outline: none;
+            /*
+       Khi người dùng đang nhập,
+       đổi màu border sang xanh
+       để biết input đang được chọn.
+    */
+            border-color: #2563eb;
+        }
+
+
+/* ==================== NÚT SUBMIT ==================== */
+
+.auth-submit {
+    /* Nút Đăng ký / Đăng nhập rộng bằng card */
+    width: 100%;
+    /* Tạo khoảng cách với field phía trên */
+    margin-top: 6px;
+}
+
+
+/* ==================== LINK PHÍA DƯỚI FORM ==================== */
+
+.auth-bottom-link {
+    /*
+       Tạo khoảng cách với nút submit.
+       Ví dụ:
+       "Chưa có tài khoản? Đăng ký"
+    */
+    margin-top: 16px;
+    /* Căn nội dung ra giữa */
+    text-align: center;
+}
+
+
+/* ==================== THÔNG BÁO VALIDATION ==================== */
+
+.text-danger {
+    /* Hiển thị thông báo lỗi bằng màu đỏ */
+    color: #dc2626;
+    /* Cho chữ lỗi nhỏ hơn nội dung chính */
+    font-size: 13px;
+}
