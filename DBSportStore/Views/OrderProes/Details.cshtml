@@ -1,59 +1,72 @@
-﻿@model DBSportStore.Models.OrderPro
+﻿@using System.Linq
+@model DBSportStore.Models.OrderPro
 
 @{
-    ViewBag.Title = "Details";
+    ViewBag.Title = "Chi tiết đơn hàng #" + Model.OrderID;
     Layout = "~/Views/Shared/_StoreLayout.cshtml";
 }
 
-<h2>Details</h2>
+<h2 class="section-title">Chi tiết đơn hàng #@Model.OrderID</h2>
 
-<div>
-    <h4>OrderPro</h4>
-    <hr />
-    <dl class="dl-horizontal">
-        <dt>
-            @Html.DisplayNameFor(model => model.OrderDate)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.OrderDate)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.ShippingAddress)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.ShippingAddress)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.TotalAmount)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.TotalAmount)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.Status)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.Status)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.Customer.FullName)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.Customer.FullName)
-        </dd>
-
-    </dl>
+<div class="panel panel-default">
+    <div class="panel-heading"><strong>Thông tin đơn hàng</strong></div>
+    <div class="panel-body">
+        <p><strong>Mã đơn hàng:</strong> @Model.OrderID</p>
+        <p><strong>Ngày đặt:</strong> @Model.OrderDate.ToString("dd/MM/yyyy HH:mm")</p>
+        <p><strong>Trạng thái:</strong> @Model.Status</p>
+        <p><strong>Tổng tiền:</strong> @Model.TotalAmount.ToString("#,##0") đ</p>
+    </div>
 </div>
+
+<div class="panel panel-default">
+    <div class="panel-heading"><strong>Thông tin người nhận</strong></div>
+    <div class="panel-body">
+        <p><strong>Họ tên người nhận:</strong> @Model.RecipientName</p>
+        <p><strong>Số điện thoại giao hàng:</strong> @Model.ShippingPhone</p>
+        <p><strong>Email khách hàng:</strong> @(Model.Customer != null ? Model.Customer.Email : "Không có")</p>
+        <p><strong>Địa chỉ giao hàng:</strong> @Model.ShippingAddress</p>
+    </div>
+</div>
+
+<h3>Danh sách sản phẩm</h3>
+<div class="table-responsive">
+    <table class="table table-bordered table-striped">
+        <thead>
+            <tr>
+                <th>Sản phẩm</th>
+                <th class="text-right">Đơn giá</th>
+                <th class="text-center">Số lượng</th>
+                <th class="text-right">Thành tiền</th>
+            </tr>
+        </thead>
+        <tbody>
+            @if (Model.OrderDetail != null && Model.OrderDetail.Any())
+            {
+                foreach (var detail in Model.OrderDetail)
+                {
+                    <tr>
+                        <td>@(detail.Product != null ? detail.Product.ProductName : "Sản phẩm không còn tồn tại")</td>
+                        <td class="text-right">@detail.UnitPrice.ToString("#,##0") đ</td>
+                        <td class="text-center">@detail.Quantity</td>
+                        <td class="text-right">@((detail.UnitPrice * detail.Quantity).ToString("#,##0")) đ</td>
+                    </tr>
+                }
+            }
+            else
+            {
+                <tr><td colspan="4" class="text-center">Đơn hàng chưa có sản phẩm.</td></tr>
+            }
+        </tbody>
+        <tfoot>
+            <tr>
+                <th colspan="3" class="text-right">Tổng tiền đơn hàng</th>
+                <th class="text-right">@Model.TotalAmount.ToString("#,##0") đ</th>
+            </tr>
+        </tfoot>
+    </table>
+</div>
+
 <p>
-    @Html.ActionLink("Edit", "Edit", new { id = Model.OrderID }) |
-    @Html.ActionLink("Back to List", "Index")
+    @Html.ActionLink("Quay về danh sách đơn hàng", "Index", "OrderProes", null,
+            new { @class = "btn btn-default" })
 </p>

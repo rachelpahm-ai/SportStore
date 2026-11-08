@@ -66,11 +66,17 @@ namespace DBSportStore.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            OrderPro orderPro = db.OrderPro.Find(id);
+            // Lấy thông tin đơn hàng, khách hàng và các sản phẩm trong đơn.
+            var orderPro = db.OrderPro
+                .Include(o => o.Customer)
+                .Include(o => o.OrderDetail.Select(d => d.Product))
+                .FirstOrDefault(o => o.OrderID == id.Value);
+
             if (orderPro == null)
             {
                 return HttpNotFound();
             }
+
             return View(orderPro);
         }
 
