@@ -1,63 +1,127 @@
 ﻿@* ===== LAYOUT DÙNG CHUNG CHO TOÀN WEBSITE ===== *@
 <!DOCTYPE html>
 <html>
-@* HEAD: tiêu đề, CSS và script dùng chung *@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewBag.Title - SportStore</title> @* Tiêu đề thay đổi theo từng View *@
-    @Styles.Render("~/Content/css") @* CSS mặc định của project *@
-    <link href="~/Content/sportstore.css" rel="stylesheet" /> @* CSS riêng của SportStore *@
+
+    <title>@ViewBag.Title - SportStore</title>
+
+    @Styles.Render("~/Content/css")
+    <link href="~/Content/sportstore.css" rel="stylesheet" />
     @Scripts.Render("~/bundles/modernizr")
 </head>
-@* BODY: phần giao diện hiển thị trên trình duyệt *@
+
 <body>
-    <!-- Thanh thông báo phía trên cùng -->
+    @* ===== THANH THÔNG BÁO ===== *@
     <div class="store-topbar">
-        <div class="container">Miễn phí giao hàng cho đơn từ 1.000.000đ</div>
+        <div class="container">
+            Miễn phí giao hàng cho đơn từ 1.000.000đ
+        </div>
     </div>
 
-    <!-- Header: logo và menu điều hướng -->
+    @* ===== HEADER ===== *@
     <header class="store-header">
         <div class="container">
-            <a class="brand" href="@Url.Action("Index","Store")">SPORT<span>STORE</span></a>
 
-            <!-- Menu chính của website -->
+            @* LOGO *@
+            <a class="brand"
+               href="@Url.Action("Index", "Store")">
+                SPORT<span>STORE</span>
+            </a>
+
+            @* ===== MENU CHÍNH ===== *@
             <nav class="store-nav">
-                @* Các trang đã có Controller *@
-                @* Giới thiệu: StoreController.AboutStore() *@
-                @Html.ActionLink("Giới thiệu", "AboutStore", "Store")
-                @* Trang chủ: StoreController.Index() *@
-                @Html.ActionLink("Trang chủ", "Index", "Store")
-                @* CRUD sản phẩm *@
-                @Html.ActionLink("Quản lý sản phẩm", "Index", "Products")
 
-                @* Chưa tạo Controller trong phần thực hành chính B05 – Sẽ tạo ở Bài tập cuối buổi B05 này → để link tạm *@
-                @*<a href="#">Quản lý danh mục</a>
-                    <a href="#">Quản lý khách hàng</a>
-                    <a href="#">Quản lý đơn hàng</a>*@
+                @* MENU CHUNG CHO TẤT CẢ *@
 
-                @Html.ActionLink("Quản lý danh mục", "Index", "Categories")
-                @Html.ActionLink("Quản lý khách hàng", "Index", "Customers")
-                @Html.ActionLink("Quản lý đơn hàng", "Index", "OrderProes")
+                @Html.ActionLink(
+                    "Giới thiệu",
+                    "AboutStore",
+                    "Store")
 
+                @Html.ActionLink(
+                    "Trang chủ",
+                    "Index",
+                    "Store")
 
-                @* Các chức năng sẽ thực hiện ở các buổi sau *@
-                @* Giỏ hàng *@
+                @* GIỎ HÀNG *@
                 @{ Html.RenderAction(
                         "BagCart",
                         "ShoppingCart");
-                }                <a href="#">Đăng nhập</a>
+                }
+
+                @* ===== KHÁCH CHƯA ĐĂNG NHẬP ===== *@
+                @if (Session["UserID"] == null)
+                {
+                    @Html.ActionLink(
+                        "Đăng ký",
+                        "SignUp",
+                        "Account")
+
+                    @Html.ActionLink(
+                        "Đăng nhập",
+                        "Login",
+                        "Account")
+                }
+                else
+                {
+                    @* ===== MENU DÀNH CHO ADMIN ===== *@
+                    if (Convert.ToString(Session["Role"]) == "Admin")
+                    {
+                        @Html.ActionLink(
+                            "Quản trị",
+                            "Index",
+                            "Admin")
+
+                        @Html.ActionLink(
+                            "Sản phẩm",
+                            "Index",
+                            "Products")
+
+                        @Html.ActionLink(
+                            "Danh mục",
+                            "Index",
+                            "Categories")
+
+                        @Html.ActionLink(
+                            "Đơn hàng",
+                            "Index",
+                            "OrderProes")
+                    }
+
+                    @* ===== THÔNG TIN NGƯỜI DÙNG ===== *@
+                    <span class="nav-user">
+                        Xin chào
+                        @(Session["FullName"] ?? Session["UserName"])
+                    </span>
+
+                    @* ===== ĐĂNG XUẤT ===== *@
+                    using (Html.BeginForm(
+                        "Logout",
+                        "Account",
+                        FormMethod.Post,
+                        new { @class = "nav-logout-form" }))
+                    {
+                        @Html.AntiForgeryToken()
+
+                        <button type="submit"
+                                class="nav-link-button">
+                            Đăng xuất
+                        </button>
+                    }
+                }
+
             </nav>
         </div>
     </header>
 
-    <!-- Nội dung của từng View sẽ được chèn vào đây -->
+    @* ===== NỘI DUNG WEBSITE ===== *@
     <main class="container">
-        @RenderBody() @* Chèn nội dung View hiện tại *@
+        @RenderBody()
     </main>
 
-    <!-- Footer dùng chung -->
+    @* ===== FOOTER ===== *@
     <footer class="store-footer">
         <div class="container">
             <strong>SPORTSTORE</strong><br />
@@ -65,46 +129,10 @@
         </div>
     </footer>
 
-    @* Nạp JavaScript ở cuối trang *@
+    @* ===== JAVASCRIPT ===== *@
     @Scripts.Render("~/bundles/jquery")
     @Scripts.Render("~/bundles/bootstrap")
-    @RenderSection("scripts", required: false) @* Cho phép View thêm script riêng *@
+    @RenderSection("scripts", required: false)
 
-
-    @* Các chức năng sẽ thực hiện ở các buổi sau *@
-    @* Giỏ hàng *@
-    @{ Html.RenderAction(
-             "BagCart",
-             "ShoppingCart");
-    }
-
-    @* ==================== ĐĂNG NHẬP / ĐĂNG XUẤT ==================== *@
-
-    @* Nếu chưa đăng nhập thì hiển thị link Đăng nhập *@
-    @if (Session["UserID"] == null)
-    {
-        @Html.ActionLink(
-            "Đăng nhập",
-            "Login",
-            "Account")
-    }
-
-    @* Nếu đã đăng nhập thì hiển thị nút Đăng xuất *@
-    else
-    {
-        using (Html.BeginForm(
-            "Logout",
-            "Account",
-            FormMethod.Post,
-            new { @class = "nav-logout-form" }))
-        {
-            @Html.AntiForgeryToken()
-
-            <button type="submit"
-                    class="nav-link-button">
-                Đăng xuất
-            </button>
-        }
-    }
 </body>
 </html>

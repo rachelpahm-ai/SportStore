@@ -334,16 +334,25 @@ namespace DBSportStore.Controllers
 
             // Nếu tài khoản có Role Admin,
             // chuyển sang trang test quyền Admin.
-            if (account.Role.RoleName == "Admin")
-            {
-                return RedirectToAction(
-                    "AdminTest",
-                    "Account");
-            }
+            /* if (account.Role.RoleName == "Admin")
+             {
+                 return RedirectToAction(
+                     "AdminTest",
+                     "Account");
+             }
+            */
 
+            // ==================== CHUYỂN TRANG SAU KHI LOGIN ====================
 
-            // Customer đăng nhập thành công
-            // thì quay về Trang Chủ.
+            // Sau khi Login thành công,
+            // cả Customer và Admin đều quay về Trang Chủ.
+            //
+            // _StoreLayout.cshtml sẽ đọc:
+            // Session["UserID"]
+            // Session["UserName"]
+            // Session["Role"]
+            //
+            // để quyết định menu cần hiển thị.
             return RedirectToAction(
                 "Index",
                 "Store");

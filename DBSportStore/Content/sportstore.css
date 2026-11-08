@@ -1549,3 +1549,25 @@ nằm bên trong class catalog-search */
         grid-template-columns: 1fr;
     }
 }
+
+
+/* ==================== MENU LOGIN ==================== */
+
+.nav-user {
+    font-weight: 600;
+    color: #2563eb;
+}
+
+.nav-logout-form {
+    display: inline;
+    margin: 0;
+}
+
+.nav-link-button {
+    padding: 0;
+    border: 0;
+    background: transparent;
+    font: inherit;
+    color: inherit;
+    cursor: pointer;
+}
