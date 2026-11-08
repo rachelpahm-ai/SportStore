@@ -91,4 +91,24 @@ namespace DBSportStore.Models
         public string Address { get; set; }
     }
 
+    // =========================================================
+    // VIEWMODEL DÙNG CHO FORM LOGIN
+    // =========================================================
+
+    public class LoginViewModel
+    {
+        [Required(
+            ErrorMessage = "Vui lòng nhập tên đăng nhập.")]
+        [Display(Name = "Tên đăng nhập")]
+        public string UserName { get; set; }
+
+
+        [Required(
+            ErrorMessage = "Vui lòng nhập mật khẩu.")]
+        [DataType(DataType.Password)]
+        [Display(Name = "Mật khẩu")]
+        public string Password { get; set; }
+    }
+
+
 }

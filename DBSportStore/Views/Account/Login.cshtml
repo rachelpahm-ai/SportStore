@@ -1,0 +1,25 @@
+﻿@{
+    ViewBag.Title = "Đăng nhập";
+    Layout = "~/Views/Shared/_StoreLayout.cshtml";
+}
+
+<div class="auth-page">
+
+    <div class="auth-card">
+
+        <h2>Đăng nhập</h2>
+
+        @if (TempData["SignUpSuccess"] != null)
+        {
+            <div class="cart-message cart-message-success">
+                @TempData["SignUpSuccess"]
+            </div>
+        }
+
+        <p>
+            Chức năng Login sẽ hoàn thiện ở phần 4.
+        </p>
+
+    </div>
+
+</div>

@@ -213,5 +213,13 @@ namespace DBSportStore.Controllers
             base.Dispose(disposing);
         }
 
+        // GET: mở trang Login.
+        // Chức năng 3 sẽ bổ sung Login POST.
+        [HttpGet]
+        public ActionResult Login()
+        {
+            return View();
+        }
+
     }
 }

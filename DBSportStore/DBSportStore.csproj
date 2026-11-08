@@ -170,6 +170,7 @@
     <Compile Include="Models\OrderPro.cs">
       <DependentUpon>DBSportStoreModel.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\PasswordHelper.cs" />
     <Compile Include="Models\Product.cs">
       <DependentUpon>DBSportStoreModel.tt</DependentUpon>
     </Compile>
@@ -305,6 +306,7 @@
     <Content Include="Views\ShoppingCart\Checkout.cshtml" />
     <Content Include="Views\ShoppingCart\OrderSuccess.cshtml" />
     <Content Include="Views\Account\SignUp.cshtml" />
+    <Content Include="Views\Account\Login.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
