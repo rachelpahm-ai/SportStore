@@ -34,8 +34,8 @@
 
                 @* Chưa tạo Controller trong phần thực hành chính B05 – Sẽ tạo ở Bài tập cuối buổi B05 này → để link tạm *@
                 @*<a href="#">Quản lý danh mục</a>
-        <a href="#">Quản lý khách hàng</a>
-        <a href="#">Quản lý đơn hàng</a>*@
+                    <a href="#">Quản lý khách hàng</a>
+                    <a href="#">Quản lý đơn hàng</a>*@
 
                 @Html.ActionLink("Quản lý danh mục", "Index", "Categories")
                 @Html.ActionLink("Quản lý khách hàng", "Index", "Customers")
@@ -45,8 +45,8 @@
                 @* Các chức năng sẽ thực hiện ở các buổi sau *@
                 @* Giỏ hàng *@
                 @{ Html.RenderAction(
-                       "BagCart",
-                       "ShoppingCart");
+                        "BagCart",
+                        "ShoppingCart");
                 }                <a href="#">Đăng nhập</a>
             </nav>
         </div>
@@ -69,7 +69,42 @@
     @Scripts.Render("~/bundles/jquery")
     @Scripts.Render("~/bundles/bootstrap")
     @RenderSection("scripts", required: false) @* Cho phép View thêm script riêng *@
-    @* Thêm menu "Giới thiệu"*@
-    @Html.ActionLink("Giới thiệu", "AboutStore", "Store")
+
+
+    @* Các chức năng sẽ thực hiện ở các buổi sau *@
+    @* Giỏ hàng *@
+    @{ Html.RenderAction(
+             "BagCart",
+             "ShoppingCart");
+    }
+
+    @* ==================== ĐĂNG NHẬP / ĐĂNG XUẤT ==================== *@
+
+    @* Nếu chưa đăng nhập thì hiển thị link Đăng nhập *@
+    @if (Session["UserID"] == null)
+    {
+        @Html.ActionLink(
+            "Đăng nhập",
+            "Login",
+            "Account")
+    }
+
+    @* Nếu đã đăng nhập thì hiển thị nút Đăng xuất *@
+    else
+    {
+        using (Html.BeginForm(
+            "Logout",
+            "Account",
+            FormMethod.Post,
+            new { @class = "nav-logout-form" }))
+        {
+            @Html.AntiForgeryToken()
+
+            <button type="submit"
+                    class="nav-link-button">
+                Đăng xuất
+            </button>
+        }
+    }
 </body>
 </html>
