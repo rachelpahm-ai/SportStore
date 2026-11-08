@@ -6,6 +6,7 @@ using System.Linq;
 using System.Net;
 using System.Web.Mvc;
 using DBSportStore.Models;
+using DBSportStore.Filters;
 // Thư viện xử lý đường dẫn, tên file và phần mở rộng file
 using System.IO;
 
@@ -76,6 +77,7 @@ namespace DBSportStore.Controllers
         private DBSportStoreEntities db = new DBSportStoreEntities();
 
         // GET: Products
+        [AdminAuthorize]
         public ActionResult Index()
         {
             var product = db.Product.Include(p => p.Category);
@@ -98,6 +100,7 @@ namespace DBSportStore.Controllers
         }
 
         // GET: Products/Create
+        [AdminAuthorize]
         public ActionResult Create()
         {
             ViewBag.CategoryID = new SelectList(db.Category, "CategoryID", "CategoryName");
@@ -110,6 +113,7 @@ namespace DBSportStore.Controllers
         // Action Create nhận dữ liệu khi form gửi bằng POST
         [HttpPost]
         // Kiểm tra Anti-Forgery Token
+        [AdminAuthorize]
         [ValidateAntiForgeryToken]
         public ActionResult Create(
             // Chỉ nhận các thuộc tính được phép từ form
@@ -176,6 +180,7 @@ Product product,
         // To protect from overposting attacks, enable the specific properties you want to bind to, for 
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         // GET: Products/Edit/5
+        [AdminAuthorize]
         public ActionResult Edit(int? id)
         {
             if (id == null)
@@ -196,6 +201,7 @@ Product product,
             // Trả dữ liệu sản phẩm về View để hiển thị lên Form
             return View(product);
         }
+        [AdminAuthorize]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult Edit(
@@ -259,6 +265,7 @@ Product product,
         }
 
         // GET: Products/Delete/5
+        [AdminAuthorize]
         public ActionResult Delete(int? id)
         {
             if (id == null)
@@ -274,6 +281,7 @@ Product product,
         }
 
         // POST: Products/Delete/5
+        [AdminAuthorize]
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public ActionResult DeleteConfirmed(int id)

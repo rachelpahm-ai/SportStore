@@ -7,6 +7,7 @@ using System.Net;
 using System.Web;
 using System.Web.Mvc;
 using DBSportStore.Models;
+using DBSportStore.Filters;
 
 namespace DBSportStore.Controllers
 {
@@ -15,6 +16,7 @@ namespace DBSportStore.Controllers
         private DBSportStoreEntities db = new DBSportStoreEntities();
 
         // GET: Categories
+        [AdminAuthorize]
         public ActionResult Index()
         {
             return View(db.Category.ToList());
@@ -36,6 +38,7 @@ namespace DBSportStore.Controllers
         }
 
         // GET: Categories/Create
+        [AdminAuthorize]
         public ActionResult Create()
         {
             return View();
@@ -44,6 +47,7 @@ namespace DBSportStore.Controllers
         // POST: Categories/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to, for 
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
+        [AdminAuthorize]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult Create([Bind(Include = "CategoryID,CategoryName")] Category category)
@@ -59,6 +63,7 @@ namespace DBSportStore.Controllers
         }
 
         // GET: Categories/Edit/5
+        [AdminAuthorize]
         public ActionResult Edit(int? id)
         {
             if (id == null)
@@ -76,6 +81,7 @@ namespace DBSportStore.Controllers
         // POST: Categories/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to, for 
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
+        [AdminAuthorize]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult Edit([Bind(Include = "CategoryID,CategoryName")] Category category)
@@ -90,6 +96,7 @@ namespace DBSportStore.Controllers
         }
 
         // GET: Categories/Delete/5
+        [AdminAuthorize]
         public ActionResult Delete(int? id)
         {
             if (id == null)
@@ -105,6 +112,7 @@ namespace DBSportStore.Controllers
         }
 
         // POST: Categories/Delete/5
+        [AdminAuthorize]
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public ActionResult DeleteConfirmed(int id)
