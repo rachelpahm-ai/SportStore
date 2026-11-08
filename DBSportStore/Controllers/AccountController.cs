@@ -373,5 +373,69 @@ namespace DBSportStore.Controllers
                 "Store");
         }
 
+
+        // =====================================================
+        // TẠO ADMIN MẪU - CHỈ DÙNG TRONG LAB
+        // =====================================================
+
+        public ActionResult CreateAdminForLab()
+        {
+            // Nếu admin01 đã tồn tại thì không tạo lại.
+            bool adminExists =
+                db.UserAccount.Any(
+                    u => u.UserName == "admin01");
+
+            if (adminExists)
+            {
+                return Content(
+                    "Admin mẫu đã tồn tại.");
+            }
+
+
+            // Tìm Role Admin trong bảng Role.
+            var adminRole =
+                db.Role.FirstOrDefault(
+                    r => r.RoleName == "Admin");
+
+            if (adminRole == null)
+            {
+                return Content(
+                    "Không tìm thấy Role Admin.");
+            }
+
+
+            // Tạo Salt riêng cho Admin.
+            string salt =
+                PasswordHelper.CreateSalt();
+
+
+            var admin =
+                new UserAccount
+                {
+                    UserName = "admin01",
+
+                    PasswordSalt = salt,
+
+                    // Password lab: Admin123
+                    PasswordHash =
+                        PasswordHelper.Hash(
+                            "Admin123",
+                            salt),
+
+                    RoleID = adminRole.RoleID,
+                    IsActive = true,
+                    CreatedAt = DateTime.Now
+                };
+
+
+            db.UserAccount.Add(admin);
+            db.SaveChanges();
+
+
+            return Content(
+                "Đã tạo admin01 / Admin123. "
+                + "Hãy xóa action CreateAdminForLab.");
+        }
+
     }
 }
