@@ -346,5 +346,32 @@ namespace DBSportStore.Controllers
                 "Store");
         }
 
+        // =====================================================
+        // LOGOUT
+        // =====================================================
+
+        // Dùng POST vì Logout làm thay đổi trạng thái phiên đăng nhập.
+        [HttpPost]
+
+        [ValidateAntiForgeryToken]
+        public ActionResult Logout()
+        {
+            // Chỉ xóa các Session liên quan tài khoản.
+            Session.Remove("UserID");
+            Session.Remove("UserName");
+            Session.Remove("Role");
+            Session.Remove("CustomerID");
+            Session.Remove("FullName");
+
+
+            // KHÔNG gọi Session.Clear().
+            // Session.Clear() sẽ xóa luôn Session["Cart"] của B07.
+
+
+            return RedirectToAction(
+                "Index",
+                "Store");
+        }
+
     }
 }
