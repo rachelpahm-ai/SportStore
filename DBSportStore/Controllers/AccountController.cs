@@ -331,16 +331,19 @@ namespace DBSportStore.Controllers
             // 5. CHUYỂN TRANG SAU LOGIN
             // =================================================
 
-            // Admin vào trang quản trị.
+
+            // Nếu tài khoản có Role Admin,
+            // chuyển sang trang test quyền Admin.
             if (account.Role.RoleName == "Admin")
             {
                 return RedirectToAction(
-                    "Index",
-                    "Admin");
+                    "AdminTest",
+                    "Account");
             }
 
 
-            // Customer quay về Trang Chủ.
+            // Customer đăng nhập thành công
+            // thì quay về Trang Chủ.
             return RedirectToAction(
                 "Index",
                 "Store");
