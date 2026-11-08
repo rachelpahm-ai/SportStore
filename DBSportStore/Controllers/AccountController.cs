@@ -37,29 +37,168 @@ namespace DBSportStore.Controllers
         // =====================================================
 
         // POST: chạy khi người dùng bấm nút Đăng ký.
-        [HttpPost]
+        // =====================================================
+        // SIGN UP - TẠO USERACCOUNT VÀ CUSTOMER
+        // =====================================================
 
-        // Kiểm tra Anti-Forgery Token gửi từ form.
+        [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult SignUp(
             SignUpViewModel model)
         {
-            // ModelState.IsValid = true khi dữ liệu
-            // thỏa tất cả DataAnnotations trong ViewModel.
+            // Dữ liệu form phải hợp lệ trước khi xử lý CSDL.
             if (!ModelState.IsValid)
             {
-                // Dữ liệu sai -> trả lại View
-                // để hiển thị thông báo Validation.
                 return View(model);
             }
 
 
-            // Chức năng 1 chỉ test Validation.
-            // Chức năng 2 mới Hash + Salt và lưu CSDL.
-            ViewBag.SignUpTest =
-                "Thông tin đăng ký hợp lệ.";
+            // =================================================
+            // 1. KIỂM TRA USERNAME
+            // =================================================
 
-            return View(model);
+            // Any() trả true nếu đã có UserAccount
+            // sử dụng đúng UserName người dùng đang nhập.
+            bool userNameExists =
+                db.UserAccount.Any(
+                    u => u.UserName == model.UserName);
+
+            if (userNameExists)
+            {
+                // Gắn lỗi trực tiếp vào ô UserName.
+                ModelState.AddModelError(
+                    "UserName",
+                    "Tên đăng nhập đã tồn tại.");
+
+                return View(model);
+            }
+
+
+            // =================================================
+            // 2. LẤY ROLE CUSTOMER
+            // =================================================
+
+            // Tài khoản đăng ký công khai luôn là Customer.
+            // Người dùng KHÔNG được chọn Role từ form.
+            var customerRole =
+                db.Role.FirstOrDefault(
+                    r => r.RoleName == "Customer");
+
+            if (customerRole == null)
+            {
+                ModelState.AddModelError(
+                    "",
+                    "Không tìm thấy Role Customer.");
+
+                return View(model);
+            }
+
+
+            // =================================================
+            // 3. TẠO SALT + PASSWORD HASH
+            // =================================================
+
+            // Mỗi tài khoản tạo một Salt mới.
+            string salt =
+                PasswordHelper.CreateSalt();
+
+            // PasswordHash được tạo từ Password + Salt.
+            string passwordHash =
+                PasswordHelper.Hash(
+                    model.Password,
+                    salt);
+
+
+            // =================================================
+            // 4. BẮT ĐẦU TRANSACTION
+            // =================================================
+
+            // UserAccount và Customer phải cùng được tạo thành công.
+            // Nếu một bước lỗi -> rollback toàn bộ.
+            using (var transaction =
+                db.Database.BeginTransaction())
+            {
+                try
+                {
+                    // =============================================
+                    // 4.1. TẠO USERACCOUNT
+                    // =============================================
+
+                    var account = new UserAccount
+                    {
+                        UserName = model.UserName,
+
+                        // Không lưu Password dạng rõ.
+                        PasswordHash = passwordHash,
+                        PasswordSalt = salt,
+
+                        // Gán Role Customer lấy từ CSDL.
+                        RoleID = customerRole.RoleID,
+
+                        IsActive = true,
+
+                        // Ghi thời điểm tạo tài khoản.
+                        CreatedAt = DateTime.Now
+                    };
+
+
+                    // Đánh dấu entity cần INSERT.
+                    db.UserAccount.Add(account);
+
+                    // Ghi UserAccount xuống CSDL.
+                    db.SaveChanges();
+
+                    // Sau SaveChanges(), SQL Server sinh UserID.
+                    // EF tự cập nhật giá trị vào account.UserID.
+
+
+                    // =============================================
+                    // 4.2. TẠO CUSTOMER GẮN VỚI USERID VỪA SINH
+                    // =============================================
+
+                    var customer = new Customer
+                    {
+                        // Đây là UserID do SQL Server sinh.
+                        // KHÔNG lấy UserID từ dropdown hoặc từ form.
+                        UserID = account.UserID,
+
+                        FullName = model.FullName,
+                        Phone = model.Phone,
+                        Email = model.Email,
+                        Address = model.Address
+                    };
+
+
+                    db.Customer.Add(customer);
+                    db.SaveChanges();
+
+
+                    // Cả UserAccount và Customer đều thành công.
+                    transaction.Commit();
+
+
+                    TempData["SignUpSuccess"] =
+                        "Đăng ký thành công. "
+                        + "Vui lòng đăng nhập.";
+
+
+                    // Chức năng 3 sẽ tạo trang Login hoàn chỉnh.
+                    return RedirectToAction("Login");
+                }
+                catch
+                {
+                    // Có lỗi -> hủy toàn bộ thay đổi
+                    // trong transaction.
+                    transaction.Rollback();
+
+                    ModelState.AddModelError(
+                        "",
+                        "Có lỗi khi tạo tài khoản. "
+                        + "Vui lòng thử lại.");
+
+                    return View(model);
+                }
+            }
         }
 
 
