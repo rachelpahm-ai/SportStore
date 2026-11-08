@@ -1,0 +1,44 @@
+﻿@{
+    ViewBag.Title = "Quản trị";
+    Layout = "~/Views/Shared/_StoreLayout.cshtml";
+}
+
+<h2 class="section-title">
+    Trang quản trị
+</h2>
+
+<div class="admin-grid">
+
+    <a class="admin-card"
+       href="@Url.Action(
+           "Index",
+           "Products")">
+
+        <h3>Quản lý sản phẩm</h3>
+        <p>Thêm, sửa, xóa sản phẩm.</p>
+
+    </a>
+
+
+    <a class="admin-card"
+       href="@Url.Action(
+           "Index",
+           "Categories")">
+
+        <h3>Quản lý danh mục</h3>
+        <p>Thêm, sửa, xóa danh mục.</p>
+
+    </a>
+
+
+    <a class="admin-card"
+       href="@Url.Action(
+           "Index",
+           "Orders")">
+
+        <h3>Quản lý đơn hàng</h3>
+        <p>Xem đơn và cập nhật trạng thái.</p>
+
+    </a>
+
+</div>

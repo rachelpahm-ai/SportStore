@@ -1513,3 +1513,39 @@ nằm bên trong class catalog-search */
     /* Cho chữ lỗi nhỏ hơn nội dung chính */
     font-size: 13px;
 }
+
+
+/* =========================================================
+   B08 - ADMIN DASHBOARD
+   ========================================================= */
+
+.admin-grid {
+    display: grid;
+    /* 3 card cùng một hàng trên màn hình lớn */
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 18px;
+}
+
+.admin-card {
+    display: block;
+    padding: 20px;
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+    text-decoration: none;
+    color: #0f172a;
+}
+
+    .admin-card:hover {
+        border-color: #2563eb;
+    }
+
+    .admin-card h3 {
+        margin-top: 0;
+    }
+
+@media (max-width: 800px) {
+    .admin-grid {
+        grid-template-columns: 1fr;
+    }
+}
