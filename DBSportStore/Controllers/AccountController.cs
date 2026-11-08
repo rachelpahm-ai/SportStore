@@ -437,5 +437,44 @@ namespace DBSportStore.Controllers
                 + "Hãy xóa action CreateAdminForLab.");
         }
 
+
+
+        // =====================================================
+        // TRANG TEST QUYỀN ADMIN
+        // =====================================================
+
+        // Action này dùng để kiểm tra
+        // tài khoản hiện tại có Role Admin hay không.
+        public ActionResult AdminTest()
+        {
+            // Kiểm tra người dùng đã Login hay chưa.
+            if (Session["UserID"] == null)
+            {
+                // Chưa Login thì quay về trang Login.
+                return RedirectToAction("Login");
+            }
+
+
+            // Lấy Role của tài khoản hiện tại từ Session.
+            string role =
+                Session["Role"] == null
+                ? ""
+                : Session["Role"].ToString();
+
+
+            // Nếu không phải Admin thì không cho vào trang này.
+            if (role != "Admin")
+            {
+                return Content(
+                    "Bạn không có quyền truy cập trang Admin.");
+            }
+
+
+            // Nếu Role = Admin thì hiển thị thông báo thành công.
+            return Content(
+                "Đăng nhập Admin thành công. "
+                + "Bạn đang có quyền Admin.");
+        }
+
     }
 }
