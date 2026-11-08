@@ -7,9 +7,11 @@ using System.Net;
 using System.Web;
 using System.Web.Mvc;
 using DBSportStore.Models;
+using DBSportStore.Filters;
 
 namespace DBSportStore.Controllers
 {
+    [AdminAuthorize]
     public class OrderProesController : Controller
     {
         private DBSportStoreEntities db = new DBSportStoreEntities();
@@ -17,8 +19,44 @@ namespace DBSportStore.Controllers
         // GET: OrderProes
         public ActionResult Index()
         {
-            var orderPro = db.OrderPro.Include(o => o.Customer);
+            var orderPro = db.OrderPro.Include(o => o.Customer)
+                .OrderByDescending(o => o.OrderDate);
             return View(orderPro.ToList());
+        }
+
+        // B08 - Bài 2: Chỉ Admin được đổi trạng thái đơn hàng.
+        // Không nhận cả OrderPro từ form, tránh sửa các cột không liên quan.
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult UpdateStatus(int id, string status)
+        {
+            string[] allowedStatuses =
+            {
+                "Chờ xử lý",
+                "Đã xác nhận",
+                "Đang giao",
+                "Hoàn thành",
+                "Đã hủy"
+            };
+
+            if (string.IsNullOrWhiteSpace(status) ||
+                !allowedStatuses.Contains(status))
+            {
+                TempData["OrderError"] = "Trạng thái đơn hàng không hợp lệ.";
+                return RedirectToAction("Index");
+            }
+
+            var order = db.OrderPro.Find(id);
+            if (order == null)
+            {
+                return HttpNotFound();
+            }
+
+            order.Status = status;
+            db.SaveChanges();
+
+            TempData["OrderSuccess"] = "Đã cập nhật trạng thái đơn hàng #" + id + ".";
+            return RedirectToAction("Index");
         }
 
         // GET: OrderProes/Details/5

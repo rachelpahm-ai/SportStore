@@ -1,62 +1,69 @@
-﻿
-@model IEnumerable<DBSportStore.Models.OrderPro>
-
+﻿@model IEnumerable<DBSportStore.Models.OrderPro>
 @{
     ViewBag.Title = "Quản lý đơn hàng";
     Layout = "~/Views/Shared/_StoreLayout.cshtml";
+    var statusOptions = new[]
+    {
+        "Chờ xử lý", "Đã xác nhận", "Đang giao", "Hoàn thành", "Đã hủy"
+    };
 }
 
-<h2>Quản lý đơn hàng</h2>
+<h2 class="section-title">Quản lý đơn hàng</h2>
 
-<p>
-    @Html.ActionLink("Thêm đơn hàng mới", "Create", null,
-        new { @class = "btn btn-primary" })
-</p>
+@if (TempData["OrderSuccess"] != null)
+{
+    <div class="cart-message cart-message-success">@TempData["OrderSuccess"]</div>
+}
+@if (TempData["OrderError"] != null)
+{
+    <div class="text-danger">@TempData["OrderError"]</div>
+}
 
-<table class="table table-bordered table-striped">
-    <thead>
-        <tr>
-            <th>Mã đơn</th>
-            <th>Ngày đặt</th>
-            <th>Khách hàng</th>
-            <th>Địa chỉ giao hàng</th>
-            <th>Tổng tiền</th>
-            <th>Trạng thái</th>
-            <th>Thao tác</th>
-        </tr>
-    </thead>
-
-    <tbody>
-        @foreach (var item in Model)
-        {
+<div style="overflow-x:auto;">
+    <table class="table table-bordered table-striped" style="width:100%;">
+        <thead>
             <tr>
-                <td>
-                    @Html.DisplayFor(modelItem => item.OrderID)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.OrderDate)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Customer.FullName)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.ShippingAddress)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.TotalAmount)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Status)
-                </td>
-                <td>
-                    @Html.ActionLink("Sửa", "Edit",
-                        new { id = item.OrderID }) |
-                    @Html.ActionLink("Chi tiết", "Details",
-                        new { id = item.OrderID }) |
-                    @Html.ActionLink("Xóa", "Delete",
-                        new { id = item.OrderID })
-                </td>
+                <th>Mã đơn</th>
+                <th>Ngày đặt</th>
+                <th>Người nhận</th>
+                <th>Điện thoại</th>
+                <th>Tổng tiền</th>
+                <th>Trạng thái hiện tại</th>
+                <th>Cập nhật trạng thái</th>
+                <th>Chi tiết</th>
             </tr>
-        }
-    </tbody>
-</table>
+        </thead>
+        <tbody>
+            @foreach (var order in Model)
+            {
+                <tr>
+                    <td>@order.OrderID</td>
+                    <td>@String.Format("{0:dd/MM/yyyy HH:mm}", order.OrderDate)</td>
+                    <td>@order.RecipientName</td>
+                    <td>@order.ShippingPhone</td>
+                    <td>@String.Format("{0:N0}", order.TotalAmount) đ</td>
+                    <td>@order.Status</td>
+                    <td>
+                        @using (Html.BeginForm("UpdateStatus", "OrderProes", FormMethod.Post))
+                        {
+                            @Html.AntiForgeryToken()
+                            <input type="hidden" name="id" value="@order.OrderID" />
+                            <select name="status" class="form-control" aria-label="Trạng thái đơn @order.OrderID" required>
+                                @foreach (var status in statusOptions)
+                                {
+                                    <option value="@status" selected="@(order.Status == status ? "selected" : null)">@status</option>
+                                }
+                            </select>
+                            <button type="submit" class="btn btn-primary" style="margin-top:6px;">Lưu</button>
+                        }
+                    </td>
+                    <td>@Html.ActionLink("Chi tiết", "Details", "OrderProes", new { id = order.OrderID }, null)</td>
+                </tr>
+            }
+            @if (!Model.Any())
+            {
+                <tr><td colspan="8">Chưa có đơn hàng nào.</td></tr>
+            }
+        </tbody>
+    </table>
+</div>
