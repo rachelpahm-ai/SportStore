@@ -201,75 +201,59 @@ namespace DBSportStore.Controllers
             // Gửi dữ liệu sang Partial View BagCart.cshtml.
             return PartialView();
         }
-        // ==================== MỞ FORM CHECKOUT ====================
+
 
         // GET: hiển thị trang Checkout cho người dùng nhập thông tin.
         // =====================================================
-        // MỞ FORM CHECKOUT
+
+        // =====================================================
+        // GET: MỞ FORM CHECKOUT
         // =====================================================
 
+        [HttpGet]
         public ActionResult Checkout()
         {
-            // Lấy Cart hiện tại từ Session.
+            // Lấy giỏ hàng hiện tại
             var cart = GetCart();
 
-
-            // Không cho Checkout nếu giỏ trống.
+            // Nếu giỏ hàng trống thì quay về giỏ hàng
             if (!cart.Items.Any())
             {
                 return RedirectToAction("ShowCart");
             }
 
-
-            // Tạo ViewModel cho trang Checkout.
+            // Tạo ViewModel cho Checkout
             var model = new CheckoutViewModel
             {
                 Cart = cart
             };
 
-
-            // =================================================
-            // NẾU CUSTOMER ĐÃ LOGIN -> ĐIỀN SẴN HỒ SƠ
-            // =================================================
-
-            // CustomerID chỉ có khi Login bằng tài khoản
-            // đã gắn với một Customer.
+            // Nếu Customer đã đăng nhập
             if (Session["CustomerID"] != null)
             {
-                // Session lưu object nên ép về int.
                 int customerId =
-                    (int)Session["CustomerID"];
+                    Convert.ToInt32(Session["CustomerID"]);
 
-
-                var customer =
-                    db.Customer.Find(customerId);
-
+                // Lấy thông tin Customer từ database
+                var customer = db.Customer.Find(customerId);
 
                 if (customer != null)
                 {
-                    model.FullName =
-                        customer.FullName;
-
-                    model.Phone =
-                        customer.Phone;
-
-                    model.Email =
-                        customer.Email;
-
-                    model.Address =
-                        customer.Address;
-
-
-                    // Mặc định địa chỉ giao hàng
-                    // bằng địa chỉ hồ sơ Customer.
-                    model.ShippingAddress =
-                        customer.Address;
+                    model.FullName = customer.FullName;
+                    model.Phone = customer.Phone;
+                    model.Email = customer.Email;
+                    model.Address = customer.Address;
+                    model.ShippingAddress = customer.Address;
                 }
             }
 
+            // Xóa các giá trị ModelState cũ nếu có
+            ModelState.Clear();
 
+            // Trả ViewModel đã có dữ liệu cho form
             return View(model);
         }
+
 
 
         // ==================== NHẬN DỮ LIỆU CHECKOUT VÀ LƯU ĐƠN HÀNG ====================
@@ -357,22 +341,61 @@ namespace DBSportStore.Controllers
 
                     // B07 chưa có Login.
                     // Mỗi lần Guest Checkout sẽ tạo một Customer mới.
-                    var customer = new Customer
+
+                    // =====================================================
+                    // 1. XÁC ĐỊNH CUSTOMER CỦA ĐƠN HÀNG
+                    // =====================================================
+
+                    Customer customer = null;
+
+                    // =================================================
+                    // TRƯỜNG HỢP 1: CUSTOMER ĐÃ LOGIN
+                    // =================================================
+
+                    if (Session["CustomerID"] != null)
                     {
-                        // UserID = null nghĩa là Customer chưa có tài khoản.
-                        UserID = null,
+                        // Lấy CustomerID đã lưu khi Login.
+                        int customerId =
+                            (int)Session["CustomerID"];
 
-                        FullName = model.FullName,
-                        Phone = model.Phone,
-                        Email = model.Email,
-                        Address = model.Address
-                    };
+                        // Dùng đúng Customer hiện tại.
+                        // KHÔNG tạo Customer mới.
+                        customer =
+                            db.Customer.Find(customerId);
 
-                    // Đánh dấu Customer mới cần được thêm vào CSDL.
-                    db.Customer.Add(customer);
+                        if (customer == null)
+                        {
+                            ModelState.AddModelError(
+                                "",
+                                "Không tìm thấy hồ sơ khách hàng.");
 
-                    // Ghi Customer xuống CSDL.
-                    db.SaveChanges();
+                            return View(model);
+                        }
+                    }
+
+                    // =================================================
+                    // TRƯỜNG HỢP 2: GUEST
+                    // =================================================
+
+                    else
+                    {
+                        // Guest Checkout tạo Customer mới.
+                        customer = new Customer
+                        {
+                            UserID = null,
+                            FullName = model.FullName,
+                            Phone = model.Phone,
+                            Email = model.Email,
+                            Address = model.Address
+                        };
+
+                        db.Customer.Add(customer);
+                        db.SaveChanges();
+                    }
+
+                    // Guest: dùng CustomerID vừa tạo.
+                    // Member: dùng CustomerID đang Login.
+
 
                     // Sau SaveChanges(), SQL Server đã sinh CustomerID
                     // và EF tự cập nhật giá trị vào customer.CustomerID.
