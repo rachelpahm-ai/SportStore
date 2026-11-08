@@ -4,6 +4,7 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using DBSportStore.Models;
+using System.Data.Entity;
 
 namespace DBSportStore.Controllers
 {
@@ -219,6 +220,130 @@ namespace DBSportStore.Controllers
         public ActionResult Login()
         {
             return View();
+        }
+
+        // =====================================================
+        // LOGIN
+        // =====================================================
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult Login(
+            LoginViewModel model)
+        {
+            // Validation form phải hợp lệ.
+            if (!ModelState.IsValid)
+            {
+                return View(model);
+            }
+
+
+            // =================================================
+            // 1. TÌM USERACCOUNT
+            // =================================================
+
+            // Include(Role) để lấy thêm RoleName
+            // của tài khoản trong cùng truy vấn.
+            var account = db.UserAccount
+                .Include(u => u.Role)
+                .FirstOrDefault(
+                    u => u.UserName == model.UserName
+                      && u.IsActive);
+
+
+            // Không tìm thấy User hoặc tài khoản bị khóa.
+            if (account == null)
+            {
+                ModelState.AddModelError(
+                    "",
+                    "Tên đăng nhập hoặc mật khẩu không đúng.");
+
+                return View(model);
+            }
+
+
+            // =================================================
+            // 2. KIỂM TRA PASSWORD
+            // =================================================
+
+            // Verify():
+            // - lấy Password người dùng vừa nhập
+            // - Hash lại bằng PasswordSalt trong CSDL
+            // - so sánh với PasswordHash đã lưu.
+            bool passwordCorrect =
+                PasswordHelper.Verify(
+                    model.Password,
+                    account.PasswordSalt,
+                    account.PasswordHash);
+
+            if (!passwordCorrect)
+            {
+                ModelState.AddModelError(
+                    "",
+                    "Tên đăng nhập hoặc mật khẩu không đúng.");
+
+                return View(model);
+            }
+
+
+            // =================================================
+            // 3. LƯU TRẠNG THÁI LOGIN VÀO SESSION
+            // =================================================
+
+            // Session thuộc riêng phiên làm việc hiện tại.
+            // Các trang khác có thể đọc lại những giá trị này.
+            Session["UserID"] =
+                account.UserID;
+
+            Session["UserName"] =
+                account.UserName;
+
+            // RoleName có giá trị Admin hoặc Customer.
+            Session["Role"] =
+                account.Role.RoleName;
+
+
+            // =================================================
+            // 4. NẾU LÀ CUSTOMER -> LẤY HỒ SƠ CUSTOMER
+            // =================================================
+
+            var customer = db.Customer
+                .FirstOrDefault(
+                    c => c.UserID == account.UserID);
+
+            if (customer != null)
+            {
+                Session["CustomerID"] =
+                    customer.CustomerID;
+
+                Session["FullName"] =
+                    customer.FullName;
+            }
+            else
+            {
+                // Admin có thể không có Customer.
+                Session.Remove("CustomerID");
+                Session.Remove("FullName");
+            }
+
+
+            // =================================================
+            // 5. CHUYỂN TRANG SAU LOGIN
+            // =================================================
+
+            // Admin vào trang quản trị.
+            if (account.Role.RoleName == "Admin")
+            {
+                return RedirectToAction(
+                    "Index",
+                    "Admin");
+            }
+
+
+            // Customer quay về Trang Chủ.
+            return RedirectToAction(
+                "Index",
+                "Store");
         }
 
     }

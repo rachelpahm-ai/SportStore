@@ -1,23 +1,211 @@
-﻿@{
+﻿@* =========================================================
+    VIEW LOGIN
+    View này nhận dữ liệu từ LoginViewModel
+    ========================================================= *@
+
+@model DBSportStore.Models.LoginViewModel
+
+@{
+    // Tiêu đề hiển thị trên tab trình duyệt.
     ViewBag.Title = "Đăng nhập";
+
+    // Dùng Layout chung của website SportStore.
     Layout = "~/Views/Shared/_StoreLayout.cshtml";
 }
 
+
+@* ==================== KHUNG TRANG LOGIN ==================== *@
+
 <div class="auth-page">
 
+    @* Card chứa toàn bộ form đăng nhập *@
     <div class="auth-card">
 
         <h2>Đăng nhập</h2>
 
+        <p class="auth-subtitle">
+            Đăng nhập bằng tài khoản đã đăng ký.
+        </p>
+
+
+        @* ==================== THÔNG BÁO SAU SIGN UP ==================== *@
+
+        @*
+            Sau khi đăng ký thành công,
+            SignUp action lưu thông báo vào TempData["SignUpSuccess"]
+            rồi Redirect sang Login.
+
+            TempData phù hợp với trường hợp Redirect
+            vì dữ liệu vẫn tồn tại sang request kế tiếp.
+        *@
         @if (TempData["SignUpSuccess"] != null)
         {
             <div class="cart-message cart-message-success">
+
+                @* Hiển thị thông báo:
+                    "Đăng ký thành công. Vui lòng đăng nhập." *@
                 @TempData["SignUpSuccess"]
+
             </div>
         }
 
-        <p>
-            Chức năng Login sẽ hoàn thiện ở phần 4.
+
+        @* ==================== FORM LOGIN ==================== *@
+
+        @*
+            Khi người dùng bấm nút Đăng nhập,
+            form gửi dữ liệu bằng POST đến:
+
+            AccountController.Login(LoginViewModel model)
+        *@
+        @using (Html.BeginForm(
+            "Login",
+            "Account",
+            FormMethod.Post))
+        {
+            @* Tạo Anti-Forgery Token để bảo vệ form POST khỏi CSRF. *@
+            @Html.AntiForgeryToken()
+
+
+            @* ==================== LỖI LOGIN CHUNG ==================== *@
+
+            @*
+                Hiển thị các lỗi chung được Controller thêm bằng:
+
+                ModelState.AddModelError("", "...");
+
+                true:
+                chỉ hiển thị lỗi chung,
+                không lặp lại lỗi của từng property.
+            *@
+            @Html.ValidationSummary(
+                     true,
+                     "",
+                     new { @class = "text-danger" })
+
+
+            @* =================================================
+                USERNAME
+                ================================================= *@
+
+            <div class="auth-field">
+
+                @*
+                    LabelFor lấy tên hiển thị từ:
+
+                    [Display(Name = "Tên đăng nhập")]
+
+                    trong LoginViewModel.
+                *@
+                @Html.LabelFor(m => m.UserName)
+
+
+                @*
+                    TextBoxFor tạo ô nhập UserName.
+
+                    m => m.UserName:
+                    liên kết ô nhập với property UserName
+                    trong LoginViewModel.
+                *@
+                @Html.TextBoxFor(
+                         m => m.UserName,
+                         new
+                         {
+                             // Class CSS dùng để định dạng input.
+                             @class = "form-control-modern",
+
+                             // Chữ gợi ý khi ô nhập đang trống.
+                             placeholder = "Tên đăng nhập"
+                         })
+
+
+                @*
+                    Hiển thị lỗi Validation riêng của UserName.
+
+                    Ví dụ:
+                    "Vui lòng nhập tên đăng nhập."
+                *@
+                @Html.ValidationMessageFor(
+                         m => m.UserName,
+                         "",
+                         new { @class = "text-danger" })
+
+            </div>
+
+
+            @* =================================================
+                PASSWORD
+                ================================================= *@
+
+            <div class="auth-field">
+
+                @* Hiển thị Label "Mật khẩu". *@
+                @Html.LabelFor(m => m.Password)
+
+
+                @*
+                    PasswordFor tạo ô nhập kiểu password.
+
+                    Ký tự người dùng nhập sẽ được che lại
+                    thay vì hiển thị trực tiếp trên màn hình.
+                *@
+                @Html.PasswordFor(
+                         m => m.Password,
+                         new
+                         {
+                             @class = "form-control-modern",
+                             placeholder = "Mật khẩu"
+                         })
+
+
+                @*
+                    Hiển thị lỗi Validation riêng của Password.
+
+                    Ví dụ:
+                    "Vui lòng nhập mật khẩu."
+                *@
+                @Html.ValidationMessageFor(
+                         m => m.Password,
+                         "",
+                         new { @class = "text-danger" })
+
+            </div>
+
+
+            @* ==================== NÚT LOGIN ==================== *@
+
+            @*
+                type="submit":
+                khi click sẽ gửi toàn bộ dữ liệu form
+                về Login action bằng POST.
+            *@
+            <button type="submit"
+                    class="btn-brand auth-submit">
+                Đăng nhập
+            </button>
+        }
+
+
+        @* ==================== LINK ĐĂNG KÝ ==================== *@
+
+        <p class="auth-bottom-link">
+
+            Chưa có tài khoản?
+
+            @*
+                Url.Action tạo URL tới:
+
+                AccountController.SignUp()
+
+                Kết quả thường là:
+                /Account/SignUp
+            *@
+            <a href="@Url.Action(
+                "SignUp",
+                "Account")">
+                Đăng ký
+            </a>
+
         </p>
 
     </div>
